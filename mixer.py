@@ -19,15 +19,17 @@ from skimage.exposure import adjust_gamma
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg, NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import  Figure
 from skimage.color import rgb2hsv, rgb2gray, rgb2yuv
+from skimage.transform import  resize
+
 
 
 MainUI, _ = loadUiType(path.join(path.dirname(__file__), 'untitled.ui'))
 
 
 class Image:
-    def __init__(self,file_path,main_window):
+    def __init__(self,main_window):
         self.image_gray_scale = None
-        self.file_path = file_path
+        self.file_path = None
         self.main_window = main_window
         self.figures = []
         self.axes =[]
@@ -48,10 +50,16 @@ class Image:
 
     def open_image(self,file_path,button_name):
         pixmap = QPixmap(file_path)
+
+
         image = pixmap.toImage()
         if not self.updated:
+            image_data = imread(file_path)
+            self.images.append(image_data)
+            self.file_path = file_path
             self.grayscale_image = self.convert_to_grayscale(image)
             image = self.grayscale_image
+        self.updated = False
 
 
 
@@ -82,6 +90,17 @@ class Image:
                                                                                          transformMode=1))
             self.main_window.fourth_img_original.setScaledContents(True)
             self.main_window.add_img4_btn.hide()
+        elif button_name == 4:
+            self.main_window.output_port_1.setPixmap(QPixmap.fromImage(image).scaled(350, 350,
+                                                                                           aspectRatioMode=True,
+                                                                                           transformMode=1))
+            self.main_window.output_port_1.setScaledContents(True)
+        else:
+            self.main_window.output_port_2.setPixmap(QPixmap.fromImage(image).scaled(350, 350,
+                                                                                     aspectRatioMode=True,
+                                                                                     transformMode=1))
+            self.main_window.output_port_2.setScaledContents(True)
+
 
         self.create_figure()
 
@@ -104,7 +123,7 @@ class Image:
 
     def fourier_transform(self,image):
         image = np.fft.fftshift(np.fft.fft2(image))
-        return np.log(np.abs(image)), np.angle(image) ,image
+        return np.abs(image), np.angle(image) ,image
 
 
     def get_mode_for_each_image(self,image_index):
@@ -123,24 +142,25 @@ class Image:
 
     def read_image(self,mode,image_index):
         self.axes[image_index].cla()
-        image_data = imread(self.file_path)
-        self.image_gray_scale = rgb2gray(image_data)
-        # self.images[image_index].append(self.image_gray_scale)
+        print(f"mode:{mode}")
+        self.image_gray_scale = rgb2gray(self.images[image_index])
+        self.image_gray_scale = resize(self.image_gray_scale,(350,350),anti_aliasing=True)
+
         Magnitude, phase, image= self.fourier_transform(self.image_gray_scale)
         if mode == 'Magnitude':
-            self.axes[image_index].imshow(Magnitude,cmap='Grays')
+            self.axes[image_index].imshow(np.log(Magnitude)/20,cmap='gray')
             self.images_mode_data[image_index] = [mode,Magnitude]
 
         elif mode == 'Real Components':
-            self.axes[image_index].imshow(image.real, cmap='Grays')
+            self.axes[image_index].imshow(image.real, cmap='gray')
             self.images_mode_data[image_index] = [mode, image.real]
 
         elif mode =="Phase":
-            self.axes[image_index].imshow(phase, cmap='Grays')
+            self.axes[image_index].imshow(phase, cmap='gray')
             self.images_mode_data[image_index] = [mode, phase]
 
         elif mode == "Imaginary Components":
-            self.axes[image_index].imshow(image.imag,cmap="Grays")
+            self.axes[image_index].imshow(image.imag,cmap="gray")
             self.images_mode_data[image_index] = [mode, image.imag]
 
         self.update_graph(image_index)
@@ -155,6 +175,7 @@ class Image:
     def update_graph(self,image_index):
         print(f"inde:{image_index}")
         self.counter += 1
+        print(f"count:{self.counter}")
         self.updated = True
         self.figures[image_index].canvas.draw()
         canvas = FigureCanvasQTAgg(self.figures[image_index])
@@ -180,7 +201,7 @@ class Image:
 
 
     def get_components_mixer(self):
-        Mag_component, Phase_component, Real_component, imaginary_component = 0, 0, 0, 0
+        Mag_component, Phase_component, Real_component, imaginary_component = [],[],[], []
         for item , value in self.images_mode_data.items():
             if value[0] == 'Magnitude':
                 Mag_component = value[1]
@@ -191,12 +212,13 @@ class Image:
             else:
                 imaginary_component = value[1]
 
-        if Mag_component and Phase_component:
+        if len(Mag_component) > 2 and len(Phase_component) > 2:
+            Mag_component = np.reshape(Mag_component,Phase_component.shape)
             mixer_result = Mag_component * Phase_component
             self.image_mixer(mixer_result, 4)
 
-        if Real_component and imaginary_component:
-            mixer_result = Real_component + imaginary_component
+        if len(Real_component) > 2 and len(imaginary_component) > 2:
+            mixer_result = Real_component + 1j*imaginary_component
             self.image_mixer(mixer_result, 4)
 
 
@@ -208,10 +230,15 @@ class Image:
 
 
     def image_mixer(self,data_mixer,output_port_index):
+
         image = np.fft.ifft2(data_mixer)
 
-        self.axes[output_port_index].imshow(image,cmap='Gray')
-        self.figures[output_port_index].canvas.draw()
+        # img_filtered = np.abs(image).clip(0, 255).astype(np.uint8)
+        img_filtered = np.abs(image).clip(0, 255).astype(np.float_)
+        self.axes[output_port_index].imshow(img_filtered,cmap='gray')
+        # self.figures[output_port_index].canvas.draw()
+        print(img_filtered)
+
         self.update_graph(output_port_index)
         return
 
@@ -236,6 +263,7 @@ class MainApp(QMainWindow, MainUI):
         self.setupUi(self)
         self.handle_pushbuttons()
         self.a = "hallo"
+        self.image = Image( self)
 
 
 
@@ -259,8 +287,6 @@ class MainApp(QMainWindow, MainUI):
                                                   options=options)
         if fileName:
             print(f"button:{button_name}")
-            self.image = Image(fileName, self)
-
             self.image.open_image(fileName,button_name)
 
 
