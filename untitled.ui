@@ -200,7 +200,7 @@ color: white</string>
           <property name="frameShadow">
            <enum>QFrame::Raised</enum>
           </property>
-          <widget class="QComboBox" name="comboBox_2">
+          <widget class="QComboBox" name="comboBox_img1">
            <property name="geometry">
             <rect>
              <x>0</x>
@@ -216,17 +216,22 @@ color: white</string>
            </property>
            <item>
             <property name="text">
+             <string>Choose component</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Real Components</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
              <string>Magnitude</string>
             </property>
            </item>
            <item>
             <property name="text">
              <string>Phase</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Real Components</string>
             </property>
            </item>
            <item>
@@ -393,7 +398,7 @@ color: white</string>
           <property name="frameShadow">
            <enum>QFrame::Raised</enum>
           </property>
-          <widget class="QComboBox" name="comboBox_3">
+          <widget class="QComboBox" name="comboBox_img2">
            <property name="geometry">
             <rect>
              <x>0</x>
@@ -409,17 +414,22 @@ color: white</string>
            </property>
            <item>
             <property name="text">
+             <string>Choose component</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Real Components</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
              <string>Magnitude</string>
             </property>
            </item>
            <item>
             <property name="text">
              <string>Phase</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Real Components</string>
             </property>
            </item>
            <item>
@@ -599,7 +609,7 @@ color: white</string>
           <property name="frameShadow">
            <enum>QFrame::Raised</enum>
           </property>
-          <widget class="QComboBox" name="comboBox_4">
+          <widget class="QComboBox" name="comboBox_img3">
            <property name="geometry">
             <rect>
              <x>0</x>
@@ -615,17 +625,22 @@ color: white</string>
            </property>
            <item>
             <property name="text">
+             <string>Choose component</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Real Components</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
              <string>Magnitude</string>
             </property>
            </item>
            <item>
             <property name="text">
              <string>Phase</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Real Components</string>
             </property>
            </item>
            <item>
@@ -804,7 +819,7 @@ color: white</string>
           <property name="frameShadow">
            <enum>QFrame::Raised</enum>
           </property>
-          <widget class="QComboBox" name="comboBox_5">
+          <widget class="QComboBox" name="comboBox_img4">
            <property name="geometry">
             <rect>
              <x>0</x>
@@ -820,17 +835,22 @@ color: white</string>
            </property>
            <item>
             <property name="text">
+             <string>Choose component</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Real Components</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
              <string>Magnitude</string>
             </property>
            </item>
            <item>
             <property name="text">
              <string>Phase</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Real Components</string>
             </property>
            </item>
            <item>
@@ -977,7 +997,7 @@ color: white</string>
      <x>0</x>
      <y>0</y>
      <width>1749</width>
-     <height>22</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>
