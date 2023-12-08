@@ -178,10 +178,10 @@ color: white</string>
             <bool>false</bool>
            </property>
           </widget>
-          <widget class="QGraphicsView" name="graphicsView_3">
+          <widget class="QGraphicsView" name="graphicsView_img0">
            <property name="geometry">
             <rect>
-             <x>310</x>
+             <x>320</x>
              <y>0</y>
              <width>300</width>
              <height>300</height>
@@ -407,7 +407,7 @@ color: white</string>
             <bool>false</bool>
            </property>
           </widget>
-          <widget class="QGraphicsView" name="graphicsView_4">
+          <widget class="QGraphicsView" name="graphicsView_img1">
            <property name="geometry">
             <rect>
              <x>310</x>
@@ -643,10 +643,10 @@ color: white</string>
             <bool>false</bool>
            </property>
           </widget>
-          <widget class="QGraphicsView" name="graphicsView">
+          <widget class="QGraphicsView" name="graphicsView_img2">
            <property name="geometry">
             <rect>
-             <x>310</x>
+             <x>320</x>
              <y>0</y>
              <width>300</width>
              <height>300</height>
@@ -878,7 +878,7 @@ color: white</string>
             <bool>false</bool>
            </property>
           </widget>
-          <widget class="QGraphicsView" name="graphicsView_5">
+          <widget class="QGraphicsView" name="graphicsView_img3">
            <property name="geometry">
             <rect>
              <x>310</x>
@@ -1046,7 +1046,7 @@ color: white</string>
         <property name="frameShadow">
          <enum>QFrame::Raised</enum>
         </property>
-        <widget class="QWidget" name="">
+        <widget class="QWidget" name="layoutWidget">
          <property name="geometry">
           <rect>
            <x>160</x>
@@ -1083,7 +1083,7 @@ color: white</string>
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="">
+        <widget class="QWidget" name="layoutWidget">
          <property name="geometry">
           <rect>
            <x>1100</x>
@@ -1129,7 +1129,7 @@ color: white</string>
      <x>0</x>
      <y>0</y>
      <width>1892</width>
-     <height>22</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>

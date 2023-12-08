@@ -34,89 +34,122 @@ class Image:
         self.main_window = main_window
         self.figures = []
         self.axes =[]
+        self.selected_rectangle = None
         self.counter = 0
         self.updated = False
         self.images = [None] * 6
         self.images_selected = [None] * 6
         self.selected_image = False
         self.images_mode_data = {}
+        self.rs = [None] * 6
+        self.scenes = []
         self.image_components ={
             "Magnitude": self.get_magnitude,
             "Phase": self.get_Phase,
             "Real Components" : self.get_Real,
-            "imaginary_component": self.get_Imaginary
+            "Imaginary Components": self.get_Imaginary
 
 
         }
-        self.rs = None
+        self.create_figure()
+        self.create_scene()
+        self.draw_images={
+            0: [self.main_window.graphicsView_img0, self.main_window.first_img_original, self.main_window.add_img1_btn],
+            1: [self.main_window.graphicsView_img1, self.main_window.second_img_original, self.main_window.add_img2_btn],
+            2: [self.main_window.graphicsView_img2, self.main_window.third_img_original, self.main_window.add_img3_btn],
+            3: [self.main_window.graphicsView_img3,self.main_window.fourth_img_original, self.main_window.add_img4_btn],
+            4: [None, self.main_window.output_port_1, None],
+            5: [None, self.main_window.output_port_2, None],
+
+        }
+
+
 
 
 
     def create_figure(self):
         for __ in range(0,6):
-            fig = Figure(figsize=(10, 6))
+            fig = Figure(figsize=(4, 5))
             ax = fig.add_subplot()
             self.figures.append(fig)
             self.axes.append(ax)
 
-
+    def create_scene(self):
+        for __ in range(0, 6):
+            scene = QtWidgets.QGraphicsScene()
+            self.scenes.append(scene)
 
     def open_image(self,file_path,button_name):
         pixmap = QPixmap(file_path)
-
-
         image = pixmap.toImage()
-        if not self.updated:
-            image_data = imread(file_path)
-            self.images[button_name] = image_data
-            self.file_path = file_path
-            self.grayscale_image = self.convert_to_grayscale(image)
-            image = self.grayscale_image
-        self.updated = False
+
+        if button_name != 4 and button_name != 5:
+           image_data = imread(file_path)
+           self.images[button_name] = image_data
+
+        self.file_path = file_path
+        self.grayscale_image = self.convert_to_grayscale(image)
+        image = self.grayscale_image
+        self.draw_images[button_name][1].setPixmap(QPixmap.fromImage(image).scaled(350, 350,
+                                                                                   aspectRatioMode=True,
+                                                                                   transformMode=1))
+        self.draw_images[button_name][1].setScaledContents(True)
+        if not self.draw_images[button_name][2] is None:
+            self.draw_images[button_name][2].hide()
+
+
+        # if button_name !=4 or button_name != 5:
+        #     self.draw_images[button_name][1].setPixmap(QPixmap.fromImage(image).scaled(350, 350,
+        #                                                                                 aspectRatioMode=True,
+        #                                                                                 transformMode=1))
+        #     self.draw_images[button_name][1].setScaledContents(True)
+        #     self.draw_images[button_name][2].hide()
+        # else:
+        #     self.draw_images[button_name].setPixmap(QPixmap.fromImage(image).scaled(350, 350,
+        #                                                                                aspectRatioMode=True,
+        #                                                                                transformMode=1))
+        #     self.draw_images[button_name].setScaledContents(True)
+
+
+        # if button_name == 0:
+        #     print("kkkk")
+        #     self.draw_images[button_name][1].
+        #     self.main_window.first_img_original.setScaledContents(True)
+        #     self.main_window.add_img1_btn.hide()
+        #     # self.first_img_original.setAlignment(Qt.AlignCenter)  # Align center
+        # elif button_name == 1:
+        #     self.main_window.second_img_original.setPixmap(QPixmap.fromImage(image).scaled(350, 350,
+        #                                                                                  aspectRatioMode=True,
+        #                                                                                  transformMode=1))
+        #     self.main_window.second_img_original.setScaledContents(True)
+        #     self.main_window.add_img2_btn.hide()
+        # elif button_name == 2:
+        #     self.main_window.third_img_original.setPixmap(QPixmap.fromImage(image).scaled(350, 350,
+        #                                                                                 aspectRatioMode=True,
+        #                                                                                 transformMode=1))
+        #     self.main_window.third_img_original.setScaledContents(True)
+        #     self.main_window.add_img3_btn.hide()
+        # elif button_name == 3:
+        #     self.main_window.fourth_img_original.setPixmap(QPixmap.fromImage(image).scaled(350, 350,
+        #                                                                                  aspectRatioMode=True,
+        #                                                                                  transformMode=1))
+        #     self.main_window.fourth_img_original.setScaledContents(True)
+        #     self.main_window.add_img4_btn.hide()
+        # elif button_name == 4:
+        #     self.main_window.output_port_1.setPixmap(QPixmap.fromImage(image).scaled(350, 350,
+        #                                                                                    aspectRatioMode=True,
+        #                                                                                    transformMode=1))
+        #     self.main_window.output_port_1.setScaledContents(True)
+        # else:
+        #     self.main_window.output_port_2.setPixmap(QPixmap.fromImage(image).scaled(350, 350,
+        #                                                                              aspectRatioMode=True,
+        #                                                                              transformMode=1))
+        #     self.main_window.output_port_2.setScaledContents(True)
 
 
 
 
 
-        if button_name == 0:
-            print("kkkk")
-            self.main_window.first_img_original.setPixmap(QPixmap.fromImage(image).scaled(350, 350,
-                                                                                        aspectRatioMode=True,
-                                                                                        transformMode=1))
-            self.main_window.first_img_original.setScaledContents(True)
-            self.main_window.add_img1_btn.hide()
-            # self.first_img_original.setAlignment(Qt.AlignCenter)  # Align center
-        elif button_name == 1:
-            self.main_window.second_img_original.setPixmap(QPixmap.fromImage(image).scaled(350, 350,
-                                                                                         aspectRatioMode=True,
-                                                                                         transformMode=1))
-            self.main_window.second_img_original.setScaledContents(True)
-            self.main_window.add_img2_btn.hide()
-        elif button_name == 2:
-            self.main_window.third_img_original.setPixmap(QPixmap.fromImage(image).scaled(350, 350,
-                                                                                        aspectRatioMode=True,
-                                                                                        transformMode=1))
-            self.main_window.third_img_original.setScaledContents(True)
-            self.main_window.add_img3_btn.hide()
-        elif button_name == 3:
-            self.main_window.fourth_img_original.setPixmap(QPixmap.fromImage(image).scaled(350, 350,
-                                                                                         aspectRatioMode=True,
-                                                                                         transformMode=1))
-            self.main_window.fourth_img_original.setScaledContents(True)
-            self.main_window.add_img4_btn.hide()
-        elif button_name == 4:
-            self.main_window.output_port_1.setPixmap(QPixmap.fromImage(image).scaled(350, 350,
-                                                                                           aspectRatioMode=True,
-                                                                                           transformMode=1))
-            self.main_window.output_port_1.setScaledContents(True)
-        else:
-            self.main_window.output_port_2.setPixmap(QPixmap.fromImage(image).scaled(350, 350,
-                                                                                     aspectRatioMode=True,
-                                                                                     transformMode=1))
-            self.main_window.output_port_2.setScaledContents(True)
-
-
-        self.create_figure()
 
     def convert_to_grayscale(self, image):
         # Retrieving the width and height of the image to loop through all pixels.
@@ -140,13 +173,15 @@ class Image:
         return np.abs(image), np.angle(image) ,image
 
 
-    def line_select_callback(self,eclick, erelease):
+    def line_select_callback(self,eclick, erelease,image_index):
         print("allllo")
-        self.selected_image = True
-        print(f"image_index:{0},lllllllllllllllllll")
+        if self.selected_image:
+            self.selected_rectangle.remove()
+
+        print(f"image_index:{image_index},lllllllllllllllllll")
         x1, y1 = eclick.xdata, eclick.ydata
         x2, y2 = erelease.xdata, erelease.ydata
-        selected_rectangle = plt.Rectangle(
+        self.selected_rectangle = plt.Rectangle(
             (min(x1,x2), min(y1,y2)),
             np.abs(x1 - x2),
             np.abs(y1 - y2),
@@ -155,21 +190,29 @@ class Image:
         )
         self.images_selected[image_index] = self.images[image_index][ int(min(y1, y2)) : int(max(y1, y2)),
                                             int(min(x1, x2)) : int(max(x1, x2))]
-        self.axes[0].add_patch(selected_rectangle)
-        self.figures[0].canvas.draw()
+        self.axes[image_index].add_patch(self.selected_rectangle)
+        self.selected_image = True
+        self.figures[image_index].canvas.draw()
 
 
-    def selection(self, image_index):
+    def selection(self,image_index):
         print("lama")
-        self.rs = RectangleSelector(
-            self.axes[image_index], self.line_select_callback,
-            useblit=False,
-            button=[1],
-            minspanx=5,
-            minspany=5,
-            spancoords="pixels",
-            interactive=True,
-        )
+        if self.rs[image_index] is None:
+            self.rs[image_index] = RectangleSelector(
+                self.axes[image_index],
+                lambda eclick, erelease: self.line_select_callback(eclick, erelease, image_index),
+                useblit=False,
+                button=[1],
+                minspanx=5,
+                minspany=5,
+                spancoords="pixels",
+                interactive=True,
+            )
+            print("RectangleSelector created")
+
+        else:
+            print("RectangleSelector already exists")
+
         print(self.rs)
 
 
@@ -204,27 +247,12 @@ class Image:
         self.image_gray_scale = rgb2gray(self.images[image_index])
         self.image_gray_scale = resize(self.image_gray_scale,(350,350),anti_aliasing=True)
         self.plot_axes(mode,image_index,self.image_gray_scale)
-
-        # Magnitude, phase, image= self.fourier_transform(self.image_gray_scale)
-        #
-        # if mode == 'Magnitude':
-        #     self.axes[image_index].imshow(np.log(Magnitude)/20,cmap='gray')
-        #     self.images_mode_data[image_index] = [mode,Magnitude]
-        #
-        # elif mode == 'Real Components':
-        #     self.axes[image_index].imshow(image.real, cmap='gray')
-        #     self.images_mode_data[image_index] = [mode, image.real]
-        #
-        # elif mode =="Phase":
-        #     self.axes[image_index].imshow(phase, cmap='gray')
-        #     self.images_mode_data[image_index] = [mode, phase]
-        #
-        # elif mode == "Imaginary Components":
-        #     self.axes[image_index].imshow(image.imag,cmap="gray")
-        #     self.images_mode_data[image_index] = [mode, image.imag]
-
         self.update_graph(image_index)
-        self.selection(image_index)
+        self.figures[image_index].canvas.mpl_connect(
+            'button_press_event',
+            lambda event, index=image_index: self.selection(index)
+        )
+        # self.figures[image_index].canvas.mpl_connect('button_press_event',self.selection)
         if len(self.images_mode_data) > 1:
             self.get_components_mixer()
 
@@ -233,13 +261,20 @@ class Image:
         self.counter += 1
         print(f"count:{self.counter}")
         self.updated = True
+        self.axes[image_index].set_axis_off()
         self.figures[image_index].canvas.draw()
         canvas = FigureCanvasQTAgg(self.figures[image_index])
-        image_path= r"C:\Users\lama zakaria\Desktop\Image-Composer-Studio\image"+str(self.counter)
-        self.axes[image_index].set_axis_off()
-        self.figures[image_index].savefig(image_path,transparent=True, bbox_inches='tight')
-        plt.close(self.figures[image_index])
-        self.open_image(image_path,image_index)
+        if image_index != 4 :
+            self.draw_images[image_index][0].setScene(self.scenes[image_index])
+            self.scenes[image_index].addWidget(canvas)
+        else:
+            image_path = r"C:\Users\lama zakaria\Desktop\Image-Composer-Studio\image" + str(self.counter)
+            self.figures[image_index].savefig(image_path, transparent=True, bbox_inches='tight')
+            plt.close(self.figures[image_index])
+            self.open_image(image_path, image_index)
+
+
+
         return
 
     def brightness_contrast(self,image,image_index,bright,contrast):
@@ -270,11 +305,13 @@ class Image:
 
         if len(Mag_component) > 2 and len(Phase_component) > 2:
             mixer_result = Mag_component * Phase_component
+            self.image_mixer(mixer_result, 4)
 
         if len(Real_component) > 2 and len(imaginary_component) > 2:
             mixer_result = Real_component + 1j*imaginary_component
+            self.image_mixer(mixer_result, 4)
 
-        self.image_mixer(mixer_result, 4)
+
 
 
 
@@ -285,6 +322,8 @@ class Image:
 
 
     def image_mixer(self,data_mixer,output_port_index):
+
+        self.axes[output_port_index].cla()
 
         image = np.fft.ifft2(data_mixer)
 
@@ -324,7 +363,7 @@ class MainApp(QMainWindow, MainUI):
             lambda: self.image.read_image(self.comboBox_img3.currentText(), 2))
         self.comboBox_img4.currentTextChanged.connect(
             lambda: self.image.read_image(self.comboBox_img4.currentText(), 3))
-        self.first_img_original.mousePressEvent = lambda event: self.image.selection(0)
+        # self.graphicsView_img0.mousePressEvent = lambda event: self.image.selection(0)
 
 
     def open_image(self, button_name):
