@@ -35,8 +35,16 @@ class Image:
         self.axes =[]
         self.counter = 0
         self.updated = False
-        self.images = []
+        self.images = [None] * 6
         self.images_mode_data = {}
+        self.image_components ={
+            "Magnitude": self.get_magnitude,
+            "Phase": self.get_Phase,
+            "Real Components" : self.get_Real,
+            "imaginary_component": self.get_Imaginary
+
+
+        }
 
 
     def create_figure(self):
@@ -55,7 +63,7 @@ class Image:
         image = pixmap.toImage()
         if not self.updated:
             image_data = imread(file_path)
-            self.images.append(image_data)
+            self.images[button_name] = image_data
             self.file_path = file_path
             self.grayscale_image = self.convert_to_grayscale(image)
             image = self.grayscale_image
@@ -126,17 +134,32 @@ class Image:
         return np.abs(image), np.angle(image) ,image
 
 
-    def get_mode_for_each_image(self,image_index):
-        if image_index == 0:
-          mode = self.main_window.comboBox_img1.currentText()
-        elif image_index == 1:
-            mode = self.main_window.comboBox_img2.currentText()
-        elif image_index == 2:
-            mode = self.main_window.comboBox_img3.currentText()
-        elif image_index == 3:
-            mode = self.main_window.comboBox_img4.currentText()
 
-        return mode
+    def plot_axes(self,mode,image_index,data):
+        data = self.image_components[mode](mode,image_index,data)
+        self.axes[image_index].imshow(data, cmap='gray')
+
+    def get_magnitude(self, mode, image_index, image_gray_scale):
+        Magnitude, phase, image = self.fourier_transform(image_gray_scale)
+        self.images_mode_data[image_index] = [mode, Magnitude]
+        return np.log(Magnitude) / 20
+
+    def get_Phase(self, mode, image_index, image_gray_scale):
+        Magnitude, phase, image = self.fourier_transform(image_gray_scale)
+        self.images_mode_data[image_index] = [mode, phase]
+        return phase
+
+    def get_Real(self, mode, image_index, image_gray_scale):
+        Magnitude, phase, image = self.fourier_transform(image_gray_scale)
+        self.images_mode_data[image_index] = [mode, image.real]
+        return image.real
+
+    def get_Imaginary(self, mode, image_index, image_gray_scale):
+        Magnitude, phase, image = self.fourier_transform(image_gray_scale)
+        self.images_mode_data[image_index] = [mode,  image.imag]
+        return image.imag
+
+
 
 
 
@@ -145,23 +168,25 @@ class Image:
         print(f"mode:{mode}")
         self.image_gray_scale = rgb2gray(self.images[image_index])
         self.image_gray_scale = resize(self.image_gray_scale,(350,350),anti_aliasing=True)
+        self.plot_axes(mode,image_index,self.image_gray_scale)
 
-        Magnitude, phase, image= self.fourier_transform(self.image_gray_scale)
-        if mode == 'Magnitude':
-            self.axes[image_index].imshow(np.log(Magnitude)/20,cmap='gray')
-            self.images_mode_data[image_index] = [mode,Magnitude]
-
-        elif mode == 'Real Components':
-            self.axes[image_index].imshow(image.real, cmap='gray')
-            self.images_mode_data[image_index] = [mode, image.real]
-
-        elif mode =="Phase":
-            self.axes[image_index].imshow(phase, cmap='gray')
-            self.images_mode_data[image_index] = [mode, phase]
-
-        elif mode == "Imaginary Components":
-            self.axes[image_index].imshow(image.imag,cmap="gray")
-            self.images_mode_data[image_index] = [mode, image.imag]
+        # Magnitude, phase, image= self.fourier_transform(self.image_gray_scale)
+        #
+        # if mode == 'Magnitude':
+        #     self.axes[image_index].imshow(np.log(Magnitude)/20,cmap='gray')
+        #     self.images_mode_data[image_index] = [mode,Magnitude]
+        #
+        # elif mode == 'Real Components':
+        #     self.axes[image_index].imshow(image.real, cmap='gray')
+        #     self.images_mode_data[image_index] = [mode, image.real]
+        #
+        # elif mode =="Phase":
+        #     self.axes[image_index].imshow(phase, cmap='gray')
+        #     self.images_mode_data[image_index] = [mode, phase]
+        #
+        # elif mode == "Imaginary Components":
+        #     self.axes[image_index].imshow(image.imag,cmap="gray")
+        #     self.images_mode_data[image_index] = [mode, image.imag]
 
         self.update_graph(image_index)
         if len(self.images_mode_data) > 1:
@@ -201,7 +226,7 @@ class Image:
 
 
     def get_components_mixer(self):
-        Mag_component, Phase_component, Real_component, imaginary_component = [],[],[], []
+        Mag_component, Phase_component, Real_component, imaginary_component, mixer_result = [],[],[], [], []
         for item , value in self.images_mode_data.items():
             if value[0] == 'Magnitude':
                 Mag_component = value[1]
@@ -213,13 +238,12 @@ class Image:
                 imaginary_component = value[1]
 
         if len(Mag_component) > 2 and len(Phase_component) > 2:
-            Mag_component = np.reshape(Mag_component,Phase_component.shape)
             mixer_result = Mag_component * Phase_component
-            self.image_mixer(mixer_result, 4)
 
         if len(Real_component) > 2 and len(imaginary_component) > 2:
             mixer_result = Real_component + 1j*imaginary_component
-            self.image_mixer(mixer_result, 4)
+
+        self.image_mixer(mixer_result, 4)
 
 
 
