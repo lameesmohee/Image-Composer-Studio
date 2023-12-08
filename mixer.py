@@ -20,6 +20,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg, NavigationTool
 from matplotlib.figure import  Figure
 from skimage.color import rgb2hsv, rgb2gray, rgb2yuv
 from skimage.transform import  resize
+from matplotlib.widgets import RectangleSelector
 
 
 
@@ -36,6 +37,8 @@ class Image:
         self.counter = 0
         self.updated = False
         self.images = [None] * 6
+        self.images_selected = [None] * 6
+        self.selected_image = False
         self.images_mode_data = {}
         self.image_components ={
             "Magnitude": self.get_magnitude,
@@ -45,6 +48,8 @@ class Image:
 
 
         }
+        self.rs = None
+
 
 
     def create_figure(self):
@@ -68,6 +73,7 @@ class Image:
             self.grayscale_image = self.convert_to_grayscale(image)
             image = self.grayscale_image
         self.updated = False
+
 
 
 
@@ -134,6 +140,39 @@ class Image:
         return np.abs(image), np.angle(image) ,image
 
 
+    def line_select_callback(self,eclick, erelease):
+        print("allllo")
+        self.selected_image = True
+        print(f"image_index:{0},lllllllllllllllllll")
+        x1, y1 = eclick.xdata, eclick.ydata
+        x2, y2 = erelease.xdata, erelease.ydata
+        selected_rectangle = plt.Rectangle(
+            (min(x1,x2), min(y1,y2)),
+            np.abs(x1 - x2),
+            np.abs(y1 - y2),
+            color='r',
+            fill=False
+        )
+        self.images_selected[image_index] = self.images[image_index][ int(min(y1, y2)) : int(max(y1, y2)),
+                                            int(min(x1, x2)) : int(max(x1, x2))]
+        self.axes[0].add_patch(selected_rectangle)
+        self.figures[0].canvas.draw()
+
+
+    def selection(self, image_index):
+        print("lama")
+        self.rs = RectangleSelector(
+            self.axes[image_index], self.line_select_callback,
+            useblit=False,
+            button=[1],
+            minspanx=5,
+            minspany=5,
+            spancoords="pixels",
+            interactive=True,
+        )
+        print(self.rs)
+
+
 
     def plot_axes(self,mode,image_index,data):
         data = self.image_components[mode](mode,image_index,data)
@@ -189,6 +228,7 @@ class Image:
         #     self.images_mode_data[image_index] = [mode, image.imag]
 
         self.update_graph(image_index)
+        self.selection(image_index)
         if len(self.images_mode_data) > 1:
             self.get_components_mixer()
 
@@ -287,7 +327,8 @@ class MainApp(QMainWindow, MainUI):
         self.setupUi(self)
         self.handle_pushbuttons()
         self.a = "hallo"
-        self.image = Image( self)
+        self.image = Image(self)
+
 
 
 
@@ -303,6 +344,7 @@ class MainApp(QMainWindow, MainUI):
             lambda: self.image.read_image(self.comboBox_img3.currentText(), 2))
         self.comboBox_img4.currentTextChanged.connect(
             lambda: self.image.read_image(self.comboBox_img4.currentText(), 3))
+        self.first_img_original.mousePressEvent = lambda event: self.image.selection(0)
 
 
     def open_image(self, button_name):
