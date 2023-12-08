@@ -198,10 +198,6 @@ class Image:
         self.images_mode_data[image_index] = [mode,  image.imag]
         return image.imag
 
-
-
-
-
     def read_image(self,mode,image_index):
         self.axes[image_index].cla()
         print(f"mode:{mode}")
@@ -231,11 +227,6 @@ class Image:
         self.selection(image_index)
         if len(self.images_mode_data) > 1:
             self.get_components_mixer()
-
-
-
-
-
 
     def update_graph(self,image_index):
         print(f"inde:{image_index}")
@@ -311,15 +302,6 @@ class Image:
 
 
 
-
-
-
-
-
-
-
-
-
 class MainApp(QMainWindow, MainUI):
     def __init__(self, parent=None):
         super(MainApp, self).__init__(parent)
@@ -328,8 +310,6 @@ class MainApp(QMainWindow, MainUI):
         self.handle_pushbuttons()
         self.a = "hallo"
         self.image = Image(self)
-
-
 
 
     def handle_pushbuttons(self):

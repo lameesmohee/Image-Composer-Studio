@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1749</width>
-    <height>958</height>
+    <width>1892</width>
+    <height>1010</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -83,7 +83,7 @@ QSlider::handle:horizontal:hover {
 </string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout_5">
+   <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
@@ -95,14 +95,14 @@ QSlider::handle:horizontal:hover {
          <widget class="QFrame" name="frame_11">
           <property name="minimumSize">
            <size>
-            <width>350</width>
-            <height>350</height>
+            <width>625</width>
+            <height>300</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
-            <width>350</width>
-            <height>350</height>
+            <width>625</width>
+            <height>300</height>
            </size>
           </property>
           <property name="frameShape">
@@ -116,8 +116,8 @@ QSlider::handle:horizontal:hover {
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>350</width>
-             <height>350</height>
+             <width>300</width>
+             <height>300</height>
             </rect>
            </property>
            <property name="sizePolicy">
@@ -128,14 +128,14 @@ QSlider::handle:horizontal:hover {
            </property>
            <property name="minimumSize">
             <size>
-             <width>350</width>
-             <height>350</height>
+             <width>300</width>
+             <height>300</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
-             <width>350</width>
-             <height>350</height>
+             <width>300</width>
+             <height>300</height>
             </size>
            </property>
            <property name="font">
@@ -176,6 +176,31 @@ color: white</string>
            </property>
            <property name="flat">
             <bool>false</bool>
+           </property>
+          </widget>
+          <widget class="QGraphicsView" name="graphicsView_3">
+           <property name="geometry">
+            <rect>
+             <x>310</x>
+             <y>0</y>
+             <width>300</width>
+             <height>300</height>
+            </rect>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>300</width>
+             <height>300</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>300</width>
+             <height>300</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">border: 0px;</string>
            </property>
           </widget>
          </widget>
@@ -306,10 +331,16 @@ color: white</string>
         </item>
         <item>
          <widget class="QFrame" name="frame_12">
+          <property name="minimumSize">
+           <size>
+            <width>625</width>
+            <height>300</height>
+           </size>
+          </property>
           <property name="maximumSize">
            <size>
-            <width>350</width>
-            <height>350</height>
+            <width>625</width>
+            <height>300</height>
            </size>
           </property>
           <property name="frameShape">
@@ -323,20 +354,20 @@ color: white</string>
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>350</width>
-             <height>350</height>
+             <width>300</width>
+             <height>300</height>
             </rect>
            </property>
            <property name="minimumSize">
             <size>
-             <width>350</width>
-             <height>350</height>
+             <width>300</width>
+             <height>300</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
-             <width>350</width>
-             <height>350</height>
+             <width>300</width>
+             <height>300</height>
             </size>
            </property>
            <property name="font">
@@ -374,6 +405,31 @@ color: white</string>
            </property>
            <property name="flat">
             <bool>false</bool>
+           </property>
+          </widget>
+          <widget class="QGraphicsView" name="graphicsView_4">
+           <property name="geometry">
+            <rect>
+             <x>310</x>
+             <y>0</y>
+             <width>300</width>
+             <height>300</height>
+            </rect>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>300</width>
+             <height>300</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>300</width>
+             <height>300</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">border: 0px;</string>
            </property>
           </widget>
          </widget>
@@ -513,14 +569,14 @@ color: white</string>
          <widget class="QFrame" name="frame_13">
           <property name="minimumSize">
            <size>
-            <width>350</width>
-            <height>350</height>
+            <width>625</width>
+            <height>300</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
-            <width>350</width>
-            <height>350</height>
+            <width>625</width>
+            <height>300</height>
            </size>
           </property>
           <property name="frameShape">
@@ -534,20 +590,20 @@ color: white</string>
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>350</width>
-             <height>350</height>
+             <width>300</width>
+             <height>300</height>
             </rect>
            </property>
            <property name="minimumSize">
             <size>
-             <width>350</width>
-             <height>350</height>
+             <width>300</width>
+             <height>300</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
-             <width>350</width>
-             <height>350</height>
+             <width>300</width>
+             <height>300</height>
             </size>
            </property>
            <property name="font">
@@ -585,6 +641,31 @@ color: white</string>
            </property>
            <property name="flat">
             <bool>false</bool>
+           </property>
+          </widget>
+          <widget class="QGraphicsView" name="graphicsView">
+           <property name="geometry">
+            <rect>
+             <x>310</x>
+             <y>0</y>
+             <width>300</width>
+             <height>300</height>
+            </rect>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>300</width>
+             <height>300</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>300</width>
+             <height>300</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">border: 0px;</string>
            </property>
           </widget>
          </widget>
@@ -723,14 +804,14 @@ color: white</string>
          <widget class="QFrame" name="frame_14">
           <property name="minimumSize">
            <size>
-            <width>350</width>
-            <height>350</height>
+            <width>625</width>
+            <height>300</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
-            <width>350</width>
-            <height>350</height>
+            <width>625</width>
+            <height>300</height>
            </size>
           </property>
           <property name="frameShape">
@@ -744,20 +825,20 @@ color: white</string>
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>350</width>
-             <height>350</height>
+             <width>300</width>
+             <height>300</height>
             </rect>
            </property>
            <property name="minimumSize">
             <size>
-             <width>350</width>
-             <height>350</height>
+             <width>300</width>
+             <height>300</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
-             <width>350</width>
-             <height>350</height>
+             <width>300</width>
+             <height>300</height>
             </size>
            </property>
            <property name="font">
@@ -795,6 +876,31 @@ color: white</string>
            </property>
            <property name="flat">
             <bool>false</bool>
+           </property>
+          </widget>
+          <widget class="QGraphicsView" name="graphicsView_5">
+           <property name="geometry">
+            <rect>
+             <x>310</x>
+             <y>0</y>
+             <width>300</width>
+             <height>300</height>
+            </rect>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>300</width>
+             <height>300</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>300</width>
+             <height>300</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">border: 0px;</string>
            </property>
           </widget>
          </widget>
@@ -931,61 +1037,87 @@ color: white</string>
      </layout>
     </item>
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
+     <layout class="QHBoxLayout" name="horizontalLayout_5">
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_4">
-        <property name="sizeConstraint">
-         <enum>QLayout::SetFixedSize</enum>
+       <widget class="QFrame" name="frame">
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
         </property>
-        <item>
-         <widget class="QLabel" name="output_port_1">
-          <property name="minimumSize">
-           <size>
-            <width>350</width>
-            <height>350</height>
-           </size>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+        <widget class="QWidget" name="">
+         <property name="geometry">
+          <rect>
+           <x>160</x>
+           <y>10</y>
+           <width>311</width>
+           <height>311</height>
+          </rect>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <property name="sizeConstraint">
+           <enum>QLayout::SetFixedSize</enum>
           </property>
-          <property name="maximumSize">
-           <size>
-            <width>350</width>
-            <height>350</height>
-           </size>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">background: white</string>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
-        <item>
-         <widget class="QLabel" name="output_port_2">
-          <property name="minimumSize">
-           <size>
-            <width>350</width>
-            <height>350</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>350</width>
-            <height>350</height>
-           </size>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">background: white</string>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-       </layout>
+          <item>
+           <widget class="QLabel" name="output_port_1">
+            <property name="minimumSize">
+             <size>
+              <width>300</width>
+              <height>300</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>300</width>
+              <height>300</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background: white</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="">
+         <property name="geometry">
+          <rect>
+           <x>1100</x>
+           <y>0</y>
+           <width>321</width>
+           <height>321</height>
+          </rect>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <widget class="QLabel" name="output_port_2">
+            <property name="minimumSize">
+             <size>
+              <width>300</width>
+              <height>300</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>300</width>
+              <height>300</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background: white</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
       </item>
      </layout>
     </item>
@@ -996,8 +1128,8 @@ color: white</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1749</width>
-     <height>26</height>
+     <width>1892</width>
+     <height>22</height>
     </rect>
    </property>
   </widget>
