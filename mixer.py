@@ -49,7 +49,6 @@ class Image:
             "Real Components" : self.get_Real,
             "Imaginary Components": self.get_Imaginary
 
-
         }
         self.create_figure()
         self.create_scene()
@@ -63,14 +62,12 @@ class Image:
 
         }
 
-
-
-
-
     def create_figure(self):
         for __ in range(0,6):
-            fig = Figure(figsize=(4, 5))
+            # fig = Figure(figsize=(4, 5))
+            fig = Figure(figsize=(4.5, 4.5))
             ax = fig.add_subplot()
+            ax.set_position([-0.04, 0.34, 0.75, 0.65])
             self.figures.append(fig)
             self.axes.append(ax)
 
@@ -90,7 +87,7 @@ class Image:
         self.file_path = file_path
         self.grayscale_image = self.convert_to_grayscale(image)
         image = self.grayscale_image
-        self.draw_images[button_name][1].setPixmap(QPixmap.fromImage(image).scaled(350, 350,
+        self.draw_images[button_name][1].setPixmap(QPixmap.fromImage(image).scaled(300, 300,
                                                                                    aspectRatioMode=True,
                                                                                    transformMode=1))
         self.draw_images[button_name][1].setScaledContents(True)
@@ -146,16 +143,10 @@ class Image:
         #                                                                              transformMode=1))
         #     self.main_window.output_port_2.setScaledContents(True)
 
-
-
-
-
-
     def convert_to_grayscale(self, image):
         # Retrieving the width and height of the image to loop through all pixels.
         width = image.width()
         height = image.height()
-
 
         for y in range(height):
             for x in range(width):
@@ -245,7 +236,7 @@ class Image:
         self.axes[image_index].cla()
         print(f"mode:{mode}")
         self.image_gray_scale = rgb2gray(self.images[image_index])
-        self.image_gray_scale = resize(self.image_gray_scale,(350,350),anti_aliasing=True)
+        self.image_gray_scale = resize(self.image_gray_scale,(300,300),anti_aliasing=True)
         self.plot_axes(mode,image_index,self.image_gray_scale)
         self.update_graph(image_index)
         self.figures[image_index].canvas.mpl_connect(
@@ -268,12 +259,10 @@ class Image:
             self.draw_images[image_index][0].setScene(self.scenes[image_index])
             self.scenes[image_index].addWidget(canvas)
         else:
-            image_path = r"C:\Users\lama zakaria\Desktop\Image-Composer-Studio\image" + str(self.counter)
+            image_path = r"C:\Users\delta\OneDrive\Desktop\new composer\Image-Composer-Studio\image" + str(self.counter)
             self.figures[image_index].savefig(image_path, transparent=True, bbox_inches='tight')
             plt.close(self.figures[image_index])
             self.open_image(image_path, image_index)
-
-
 
         return
 
@@ -288,8 +277,6 @@ class Image:
         # image = adjust_gamma(image,gamma=gamma)    # less than 1 brightness  more than 1 contrast
         self.axes[image_index].imshow(new_image, cmap="Gray")
         self.update_graph(image_index)
-
-
 
     def get_components_mixer(self):
         Mag_component, Phase_component, Real_component, imaginary_component, mixer_result = [],[],[], [], []
@@ -313,14 +300,6 @@ class Image:
 
 
 
-
-
-
-
-
-
-
-
     def image_mixer(self,data_mixer,output_port_index):
 
         self.axes[output_port_index].cla()
@@ -336,10 +315,7 @@ class Image:
         self.update_graph(output_port_index)
         return
 
-
         # label.setPixmap(canvas.get_default_renderer().toPixmap())
-
-
 
 class MainApp(QMainWindow, MainUI):
     def __init__(self, parent=None):
@@ -363,6 +339,15 @@ class MainApp(QMainWindow, MainUI):
             lambda: self.image.read_image(self.comboBox_img3.currentText(), 2))
         self.comboBox_img4.currentTextChanged.connect(
             lambda: self.image.read_image(self.comboBox_img4.currentText(), 3))
+        self.graphicsView_img0.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.graphicsView_img0.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.graphicsView_img1.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.graphicsView_img1.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.graphicsView_img2.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.graphicsView_img2.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.graphicsView_img3.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.graphicsView_img3.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        
         # self.graphicsView_img0.mousePressEvent = lambda event: self.image.selection(0)
 
 
