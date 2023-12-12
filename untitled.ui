@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1892</width>
-    <height>1010</height>
+    <height>1017</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -265,24 +265,6 @@ color: white</string>
             </property>
            </item>
           </widget>
-          <widget class="QLabel" name="label_5">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>190</y>
-             <width>101</width>
-             <height>31</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>11</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>Contrast</string>
-           </property>
-          </widget>
           <widget class="QSlider" name="horizontalSlider_3">
            <property name="geometry">
             <rect>
@@ -301,7 +283,7 @@ color: white</string>
             <rect>
              <x>0</x>
              <y>120</y>
-             <width>101</width>
+             <width>221</width>
              <height>31</height>
             </rect>
            </property>
@@ -311,20 +293,7 @@ color: white</string>
             </font>
            </property>
            <property name="text">
-            <string>Brightness</string>
-           </property>
-          </widget>
-          <widget class="QSlider" name="horizontalSlider_4">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>230</y>
-             <width>221</width>
-             <height>18</height>
-            </rect>
-           </property>
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+            <string>Mixing Percentage %</string>
            </property>
           </widget>
          </widget>
@@ -494,24 +463,6 @@ color: white</string>
             </property>
            </item>
           </widget>
-          <widget class="QLabel" name="label_7">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>190</y>
-             <width>101</width>
-             <height>31</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>11</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>Contrast</string>
-           </property>
-          </widget>
           <widget class="QSlider" name="horizontalSlider_5">
            <property name="geometry">
             <rect>
@@ -530,7 +481,7 @@ color: white</string>
             <rect>
              <x>0</x>
              <y>120</y>
-             <width>101</width>
+             <width>221</width>
              <height>31</height>
             </rect>
            </property>
@@ -540,20 +491,7 @@ color: white</string>
             </font>
            </property>
            <property name="text">
-            <string>Brightness</string>
-           </property>
-          </widget>
-          <widget class="QSlider" name="horizontalSlider_6">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>230</y>
-             <width>221</width>
-             <height>18</height>
-            </rect>
-           </property>
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+            <string>Mixing Percentage %</string>
            </property>
           </widget>
          </widget>
@@ -746,28 +684,12 @@ color: white</string>
             <enum>Qt::Horizontal</enum>
            </property>
           </widget>
-          <widget class="QSlider" name="horizontalSlider_2">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>230</y>
-             <width>221</width>
-             <height>18</height>
-            </rect>
-           </property>
-           <property name="styleSheet">
-            <string notr="true"/>
-           </property>
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-          </widget>
           <widget class="QLabel" name="label_3">
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>120</y>
-             <width>101</width>
+             <width>221</width>
              <height>31</height>
             </rect>
            </property>
@@ -777,25 +699,7 @@ color: white</string>
             </font>
            </property>
            <property name="text">
-            <string>Brightness</string>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label_4">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>190</y>
-             <width>101</width>
-             <height>31</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>11</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>Contrast</string>
+            <string>Mixing Percentage %</string>
            </property>
           </widget>
          </widget>
@@ -965,24 +869,6 @@ color: white</string>
             </property>
            </item>
           </widget>
-          <widget class="QLabel" name="label_9">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>190</y>
-             <width>101</width>
-             <height>31</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>11</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>Contrast</string>
-           </property>
-          </widget>
           <widget class="QSlider" name="horizontalSlider_7">
            <property name="geometry">
             <rect>
@@ -1001,7 +887,7 @@ color: white</string>
             <rect>
              <x>0</x>
              <y>120</y>
-             <width>101</width>
+             <width>221</width>
              <height>31</height>
             </rect>
            </property>
@@ -1011,23 +897,7 @@ color: white</string>
             </font>
            </property>
            <property name="text">
-            <string>Brightness</string>
-           </property>
-          </widget>
-          <widget class="QSlider" name="horizontalSlider_8">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>230</y>
-             <width>221</width>
-             <height>18</height>
-            </rect>
-           </property>
-           <property name="styleSheet">
-            <string notr="true"/>
-           </property>
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+            <string>Mixing Percentage %</string>
            </property>
           </widget>
          </widget>
@@ -1104,6 +974,44 @@ color: white</string>
            </widget>
           </item>
          </layout>
+        </widget>
+        <widget class="QRadioButton" name="radioButton_2">
+         <property name="geometry">
+          <rect>
+           <x>1480</x>
+           <y>160</y>
+           <width>21</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QRadioButton::indicator:checked {
+    background-color: green; /* Set the background color when checked */
+    border-radius: 8px; /* Maintain the rounded shape when checked */
+}</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QRadioButton" name="radioButton_3">
+         <property name="geometry">
+          <rect>
+           <x>520</x>
+           <y>160</y>
+           <width>21</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QRadioButton::indicator:checked {
+    background-color: green; /* Set the background color when checked */
+    border-radius: 8px; /* Maintain the rounded shape when checked */
+}</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
         </widget>
        </widget>
       </item>

@@ -259,7 +259,7 @@ class Image:
             self.draw_images[image_index][0].setScene(self.scenes[image_index])
             self.scenes[image_index].addWidget(canvas)
         else:
-            image_path = r"C:\Users\delta\OneDrive\Desktop\new composer\Image-Composer-Studio\image" + str(self.counter)
+            image_path = r"C:\Users\delta\OneDrive\Desktop\mmiixxeerr\Image-Composer-Studio\image" + str(self.counter)
             self.figures[image_index].savefig(image_path, transparent=True, bbox_inches='tight')
             plt.close(self.figures[image_index])
             self.open_image(image_path, image_index)
