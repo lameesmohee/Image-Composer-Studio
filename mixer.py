@@ -57,8 +57,8 @@ class Image:
             1: [self.main_window.graphicsView_img1, self.main_window.second_img_original, self.main_window.add_img2_btn],
             2: [self.main_window.graphicsView_img2, self.main_window.third_img_original, self.main_window.add_img3_btn],
             3: [self.main_window.graphicsView_img3,self.main_window.fourth_img_original, self.main_window.add_img4_btn],
-            4: [None, self.main_window.output_port_1, None],
-            5: [None, self.main_window.output_port_2, None],
+            4: [self.main_window.output_port_1],
+            5: [self.main_window.output_port_2],
 
         }
 
@@ -255,15 +255,8 @@ class Image:
         self.axes[image_index].set_axis_off()
         self.figures[image_index].canvas.draw()
         canvas = FigureCanvasQTAgg(self.figures[image_index])
-        if image_index != 4 :
-            self.draw_images[image_index][0].setScene(self.scenes[image_index])
-            self.scenes[image_index].addWidget(canvas)
-        else:
-            image_path = r"C:\Users\delta\OneDrive\Desktop\mmiixxeerr\Image-Composer-Studio\image" + str(self.counter)
-            self.figures[image_index].savefig(image_path, transparent=True, bbox_inches='tight')
-            plt.close(self.figures[image_index])
-            self.open_image(image_path, image_index)
-
+        self.draw_images[image_index][0].setScene(self.scenes[image_index])
+        self.scenes[image_index].addWidget(canvas)
         return
 
     def brightness_contrast(self,image,image_index,bright,contrast):
@@ -279,16 +272,19 @@ class Image:
         self.update_graph(image_index)
 
     def get_components_mixer(self):
+        print(f"image:{len(self.images_mode_data)}")
         Mag_component, Phase_component, Real_component, imaginary_component, mixer_result = [],[],[], [], []
-        for item , value in self.images_mode_data.items():
-            if value[0] == 'Magnitude':
-                Mag_component = value[1]
-            elif value[0] == "Phase":
-                Phase_component = np.exp(value[1]* 1j)
-            elif value[0] == "Real Components":
-                Real_component = value[1]
+        for item, dataa in self.images_mode_data.items():
+
+            if dataa[0] == 'Magnitude':
+                print(dataa[1])
+                Mag_component = dataa[1]
+            elif dataa[0] == "Phase":
+                Phase_component = np.exp(dataa[1]* 1j)
+            elif dataa[0] == "Real Components":
+                Real_component = dataa[1]
             else:
-                imaginary_component = value[1]
+                imaginary_component = dataa[1]
 
         if len(Mag_component) > 2 and len(Phase_component) > 2:
             mixer_result = Mag_component * Phase_component
