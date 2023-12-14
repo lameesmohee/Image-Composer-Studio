@@ -21,6 +21,7 @@ from matplotlib.figure import  Figure
 from skimage.color import rgb2hsv, rgb2gray, rgb2yuv
 from skimage.transform import  resize
 from matplotlib.widgets import RectangleSelector
+from collections import Counter
 
 
 
@@ -43,13 +44,31 @@ class Image:
         self.images_mode_data = {}
         self.rs = [None] * 6
         self.scenes = []
-        self.image_components ={
+        self.mixer = False
+        self.counter_comp = 0
+        self.visited_img = []
+        self.image_component={
+            "Magnitude": [],
+            "Phase": [],
+            "Real Components": [],
+            "Imaginary Components": []
+
+        }
+        self.image_components = {}
+        self.sliders = [self.main_window.horizontalSlider_img1,
+                       self.main_window.horizontalSlider_img2,
+                       self.main_window.horizontalSlider_img3,
+                       self.main_window.horizontalSlider_img4]
+
+
+        self.image_components_func ={
             "Magnitude": self.get_magnitude,
             "Phase": self.get_Phase,
             "Real Components" : self.get_Real,
             "Imaginary Components": self.get_Imaginary
 
         }
+
         self.create_figure()
         self.create_scene()
         self.draw_images={
@@ -95,53 +114,7 @@ class Image:
             self.draw_images[button_name][2].hide()
 
 
-        # if button_name !=4 or button_name != 5:
-        #     self.draw_images[button_name][1].setPixmap(QPixmap.fromImage(image).scaled(350, 350,
-        #                                                                                 aspectRatioMode=True,
-        #                                                                                 transformMode=1))
-        #     self.draw_images[button_name][1].setScaledContents(True)
-        #     self.draw_images[button_name][2].hide()
-        # else:
-        #     self.draw_images[button_name].setPixmap(QPixmap.fromImage(image).scaled(350, 350,
-        #                                                                                aspectRatioMode=True,
-        #                                                                                transformMode=1))
-        #     self.draw_images[button_name].setScaledContents(True)
 
-
-        # if button_name == 0:
-        #     print("kkkk")
-        #     self.draw_images[button_name][1].
-        #     self.main_window.first_img_original.setScaledContents(True)
-        #     self.main_window.add_img1_btn.hide()
-        #     # self.first_img_original.setAlignment(Qt.AlignCenter)  # Align center
-        # elif button_name == 1:
-        #     self.main_window.second_img_original.setPixmap(QPixmap.fromImage(image).scaled(350, 350,
-        #                                                                                  aspectRatioMode=True,
-        #                                                                                  transformMode=1))
-        #     self.main_window.second_img_original.setScaledContents(True)
-        #     self.main_window.add_img2_btn.hide()
-        # elif button_name == 2:
-        #     self.main_window.third_img_original.setPixmap(QPixmap.fromImage(image).scaled(350, 350,
-        #                                                                                 aspectRatioMode=True,
-        #                                                                                 transformMode=1))
-        #     self.main_window.third_img_original.setScaledContents(True)
-        #     self.main_window.add_img3_btn.hide()
-        # elif button_name == 3:
-        #     self.main_window.fourth_img_original.setPixmap(QPixmap.fromImage(image).scaled(350, 350,
-        #                                                                                  aspectRatioMode=True,
-        #                                                                                  transformMode=1))
-        #     self.main_window.fourth_img_original.setScaledContents(True)
-        #     self.main_window.add_img4_btn.hide()
-        # elif button_name == 4:
-        #     self.main_window.output_port_1.setPixmap(QPixmap.fromImage(image).scaled(350, 350,
-        #                                                                                    aspectRatioMode=True,
-        #                                                                                    transformMode=1))
-        #     self.main_window.output_port_1.setScaledContents(True)
-        # else:
-        #     self.main_window.output_port_2.setPixmap(QPixmap.fromImage(image).scaled(350, 350,
-        #                                                                              aspectRatioMode=True,
-        #                                                                              transformMode=1))
-        #     self.main_window.output_port_2.setScaledContents(True)
 
     def convert_to_grayscale(self, image):
         # Retrieving the width and height of the image to loop through all pixels.
@@ -170,8 +143,10 @@ class Image:
             self.selected_rectangle.remove()
 
         print(f"image_index:{image_index},lllllllllllllllllll")
+
         x1, y1 = eclick.xdata, eclick.ydata
         x2, y2 = erelease.xdata, erelease.ydata
+        print(f"axes:{x1,y1,x2,y2}")
         self.selected_rectangle = plt.Rectangle(
             (min(x1,x2), min(y1,y2)),
             np.abs(x1 - x2),
@@ -179,11 +154,22 @@ class Image:
             color='r',
             fill=False
         )
-        self.images_selected[image_index] = self.images[image_index][ int(min(y1, y2)) : int(max(y1, y2)),
-                                            int(min(x1, x2)) : int(max(x1, x2))]
+        for image_index, value in self.images_mode_data.items():
+            self.images_selected[image_index] = value[1][int(min(y1, y2)): int(max(y1, y2)),
+                                                int(min(x1, x2)): int(max(x1, x2))]
+
         self.axes[image_index].add_patch(self.selected_rectangle)
+
         self.selected_image = True
+
         self.figures[image_index].canvas.draw()
+
+        for image_index, value in self.images_mode_data.items():
+            # QCoreApplication.processEvents()
+            self.components_mixer(self.sliders[image_index].value(),image_index)
+
+        self.get_components_mixer()
+
 
 
     def selection(self,image_index):
@@ -209,7 +195,7 @@ class Image:
 
 
     def plot_axes(self,mode,image_index,data):
-        data = self.image_components[mode](mode,image_index,data)
+        data = self.image_components_func[mode](mode,image_index,data)
         self.axes[image_index].imshow(data, cmap='gray')
 
     def get_magnitude(self, mode, image_index, image_gray_scale):
@@ -244,8 +230,8 @@ class Image:
             lambda event, index=image_index: self.selection(index)
         )
         # self.figures[image_index].canvas.mpl_connect('button_press_event',self.selection)
-        if len(self.images_mode_data) > 1:
-            self.get_components_mixer()
+        # if len(self.images_mode_data) > 1:
+        #     self.get_components_mixer()
 
     def update_graph(self,image_index):
         print(f"inde:{image_index}")
@@ -271,28 +257,57 @@ class Image:
         self.axes[image_index].imshow(new_image, cmap="Gray")
         self.update_graph(image_index)
 
+    def check_times_image(self,image_index):
+        self.visited_img.append(image_index)
+        counter_img = Counter(self.visited_img)
+        return counter_img[image_index] ,len(counter_img)
+
+    def sum_same_components_of_different_img(self,component_name):
+        for item, value in self.image_components.items():
+            if value[0] == component_name:
+                print(f"len before :{len(self.image_component[value[0]]), value[0]}")
+                self.image_component[value[0]].append(value[1])
+                print(f"len after :{len(self.image_component[value[0]]), value[0]}")
+        if not self.selected_image:
+            self.get_components_mixer()
+
+
+    def components_mixer(self, mixer_perce, image_index):
+        self.mixer = True
+        print(f"perc:{int(mixer_perce) / 100}")
+        if self.selected_image:
+            component_data = (int(mixer_perce) / 100) * self.images_selected[image_index]
+            # self.selected_image = False
+        else:
+            component_data = (int(mixer_perce) / 100) * self.images_mode_data[image_index][1]
+
+        component = self.images_mode_data[image_index][0]
+
+        self.image_components[image_index] = [component, component_data]
+        self.image_component[component] = []
+        self.sum_same_components_of_different_img(component)
+
     def get_components_mixer(self):
         print(f"image:{len(self.images_mode_data)}")
-        Mag_component, Phase_component, Real_component, imaginary_component, mixer_result = [],[],[], [], []
-        for item, dataa in self.images_mode_data.items():
-
-            if dataa[0] == 'Magnitude':
-                print(dataa[1])
-                Mag_component = dataa[1]
-            elif dataa[0] == "Phase":
-                Phase_component = np.exp(dataa[1]* 1j)
-            elif dataa[0] == "Real Components":
-                Real_component = dataa[1]
-            else:
-                imaginary_component = dataa[1]
-
-        if len(Mag_component) > 2 and len(Phase_component) > 2:
-            mixer_result = Mag_component * Phase_component
+        Mag_component = np.sum(self.image_component["Magnitude"], axis=0)
+        Phase_component = np.sum(self.image_component["Phase"], axis=0)
+        Real_component = np.sum(self.image_component["Real Components"], axis=0)
+        imaginary_component = np.sum(self.image_component["Imaginary Components"], axis=0)
+        print(Mag_component.size)
+        if Mag_component.size != 1 or Phase_component.size != 1:
+            print("hallo mixer 1")
+            # print(f"exp:{np.exp(Phase_component*1j)}")
+            mixer_result = Mag_component * np.exp(Phase_component*1j)
+            # print(f"result:{mixer_result}")
             self.image_mixer(mixer_result, 4)
-
-        if len(Real_component) > 2 and len(imaginary_component) > 2:
+        print(f'real:{Real_component.size,imaginary_component.size}')
+        if Real_component.size != 1 or imaginary_component.size != 1:
             mixer_result = Real_component + 1j*imaginary_component
+            # print(f"result:{mixer_result}")
             self.image_mixer(mixer_result, 4)
+
+
+
 
 
 
@@ -306,7 +321,7 @@ class Image:
         img_filtered = np.abs(image).clip(0, 255).astype(np.float_)
         self.axes[output_port_index].imshow(img_filtered,cmap='gray')
         # self.figures[output_port_index].canvas.draw()
-        print(img_filtered)
+        # print(img_filtered)
 
         self.update_graph(output_port_index)
         return
@@ -343,6 +358,13 @@ class MainApp(QMainWindow, MainUI):
         self.graphicsView_img2.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.graphicsView_img3.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.graphicsView_img3.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.horizontalSlider_img1.valueChanged.connect(lambda: self.image.components_mixer(self.horizontalSlider_img1.value(),0))
+        self.horizontalSlider_img2.valueChanged.connect(
+            lambda: self.image.components_mixer(self.horizontalSlider_img2.value(), 1))
+        self.horizontalSlider_img3.valueChanged.connect(
+            lambda: self.image.components_mixer(self.horizontalSlider_img3.value(), 2))
+        self.horizontalSlider_img4.valueChanged.connect(
+            lambda: self.image.components_mixer(self.horizontalSlider_img4.value(), 3))
         
         # self.graphicsView_img0.mousePressEvent = lambda event: self.image.selection(0)
 
