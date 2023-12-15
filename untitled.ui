@@ -999,7 +999,7 @@ color: white</string>
           </item>
          </layout>
         </widget>
-        <widget class="QRadioButton" name="radioButton_2">
+        <widget class="QRadioButton" name="radioButton_output_port2">
          <property name="geometry">
           <rect>
            <x>1480</x>
@@ -1018,7 +1018,7 @@ color: white</string>
           <string/>
          </property>
         </widget>
-        <widget class="QRadioButton" name="radioButton_3">
+        <widget class="QRadioButton" name="radioButton_output_port1">
          <property name="geometry">
           <rect>
            <x>520</x>

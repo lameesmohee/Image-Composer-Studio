@@ -30,6 +30,7 @@ MainUI, _ = loadUiType(path.join(path.dirname(__file__), 'untitled.ui'))
 
 class Image:
     def __init__(self,main_window):
+        self.output_port = 4
         self.image_gray_scale = None
         self.file_path = None
         self.main_window = main_window
@@ -45,6 +46,8 @@ class Image:
         self.rs = [None] * 6
         self.scenes = []
         self.mixer = False
+        self.x1, self.y1 = 0, 0
+        self.x2, self.y2 = 0, 0
         self.counter_comp = 0
         self.visited_img = []
         self.image_component={
@@ -54,6 +57,8 @@ class Image:
             "Imaginary Components": []
 
         }
+        self.mag_and_phase = False
+        self.real_and_imaginary = False
         self.image_components = {}
         self.sliders = [self.main_window.horizontalSlider_img1,
                        self.main_window.horizontalSlider_img2,
@@ -136,6 +141,16 @@ class Image:
         image = np.fft.fftshift(np.fft.fft2(image))
         return np.abs(image), np.angle(image) ,image
 
+    def get_selected_image(self):
+        for image_index, value in self.images_mode_data.items():
+            self.images_selected[image_index] = value[1][int(min(self.y1, self.y2)): int(max(self.y1, self.y2)),
+                                                int(min(self.x1, self.x2)): int(max(self.x1, self.x2))]
+            print(f"lenght_of_selected_image:{len(self.images_selected[image_index])}")
+            if len(self.images_selected[image_index]) == 0:
+                self.selected_image = False
+            else:
+                self.selected_image = True
+
 
     def line_select_callback(self,eclick, erelease,image_index):
         print("allllo")
@@ -144,31 +159,29 @@ class Image:
 
         print(f"image_index:{image_index},lllllllllllllllllll")
 
-        x1, y1 = eclick.xdata, eclick.ydata
-        x2, y2 = erelease.xdata, erelease.ydata
-        print(f"axes:{x1,y1,x2,y2}")
+        self.x1, self.y1 = eclick.xdata, eclick.ydata
+        self.x2, self.y2 = erelease.xdata, erelease.ydata
+        # print(f"axes:{x1,y1,x2,y2}")
         self.selected_rectangle = plt.Rectangle(
-            (min(x1,x2), min(y1,y2)),
-            np.abs(x1 - x2),
-            np.abs(y1 - y2),
+            (min(self.x1,self.x2), min(self.y1,self.y2)),
+            np.abs(self.x1 - self.x2),
+            np.abs(self.y1 - self.y2),
             color='r',
             fill=False
         )
-        for image_index, value in self.images_mode_data.items():
-            self.images_selected[image_index] = value[1][int(min(y1, y2)): int(max(y1, y2)),
-                                                int(min(x1, x2)): int(max(x1, x2))]
+        self.get_selected_image()
 
         self.axes[image_index].add_patch(self.selected_rectangle)
 
-        self.selected_image = True
+
 
         self.figures[image_index].canvas.draw()
 
-        for image_index, value in self.images_mode_data.items():
+        # for image_index, value in self.images_mode_data.items():
             # QCoreApplication.processEvents()
-            self.components_mixer(self.sliders[image_index].value(),image_index)
+        self.components_mixer(self.sliders[image_index].value(),image_index)
 
-        self.get_components_mixer()
+        # self.get_components_mixer()
 
 
 
@@ -200,21 +213,25 @@ class Image:
 
     def get_magnitude(self, mode, image_index, image_gray_scale):
         Magnitude, phase, image = self.fourier_transform(image_gray_scale)
+        self.images_mode_data[image_index] = []
         self.images_mode_data[image_index] = [mode, Magnitude]
         return np.log(Magnitude) / 20
 
     def get_Phase(self, mode, image_index, image_gray_scale):
         Magnitude, phase, image = self.fourier_transform(image_gray_scale)
+        self.images_mode_data[image_index] = []
         self.images_mode_data[image_index] = [mode, phase]
         return phase
 
     def get_Real(self, mode, image_index, image_gray_scale):
         Magnitude, phase, image = self.fourier_transform(image_gray_scale)
+        self.images_mode_data[image_index] = []
         self.images_mode_data[image_index] = [mode, image.real]
         return image.real
 
     def get_Imaginary(self, mode, image_index, image_gray_scale):
         Magnitude, phase, image = self.fourier_transform(image_gray_scale)
+        self.images_mode_data[image_index] = []
         self.images_mode_data[image_index] = [mode,  image.imag]
         return image.imag
 
@@ -230,8 +247,10 @@ class Image:
             lambda event, index=image_index: self.selection(index)
         )
         # self.figures[image_index].canvas.mpl_connect('button_press_event',self.selection)
-        # if len(self.images_mode_data) > 1:
-        #     self.get_components_mixer()
+        if self.selected_image:
+            self.get_selected_image()
+        if len(self.images_mode_data) > 1:
+            self.components_mixer(1,1)
 
     def update_graph(self,image_index):
         print(f"inde:{image_index}")
@@ -261,50 +280,101 @@ class Image:
         self.visited_img.append(image_index)
         counter_img = Counter(self.visited_img)
         return counter_img[image_index] ,len(counter_img)
+    def initial_declare(self):
+        self.image_component = {
+            "Magnitude": [],
+            "Phase": [],
+            "Real Components": [],
+            "Imaginary Components": []
 
-    def sum_same_components_of_different_img(self,component_name):
+        }
+
+    def sum_same_components_of_different_img(self):
+        self.initial_declare()
         for item, value in self.image_components.items():
-            if value[0] == component_name:
-                print(f"len before :{len(self.image_component[value[0]]), value[0]}")
-                self.image_component[value[0]].append(value[1])
-                print(f"len after :{len(self.image_component[value[0]]), value[0]}")
-        if not self.selected_image:
-            self.get_components_mixer()
+
+            # self.image_component[value[0]] = []
+            print(f"len before :{len(self.image_component[value[0]]), value[0]}")
+            self.image_component[value[0]].append(value[1])
+            print(f"len after :{self.image_component[value[0]], value[0]}")
+
+
+        # if not self.selected_image:
+        self.get_components_mixer()
+
+    def get_data(self):
+        for item, value in self.images_mode_data.items():
+            component = value[0]
+            image_index = item
+
+            if self.selected_image:
+                component_data = (int(self.sliders[item].value()) / 100) * self.images_selected[image_index]
+                print(f"selected_imag:{self.images_selected[image_index]}")
+            else:
+                component_data = (int(self.sliders[item].value()) / 100) * self.images_mode_data[image_index][1]
+            self.image_components[image_index] = [component, component_data]
+                # self.get_data(self.images_selected[image_index])
+                # component_data = (int(mixer_perce) / 100) * self.images_mode_data[image_index][1]
 
 
     def components_mixer(self, mixer_perce, image_index):
         self.mixer = True
-        print(f"perc:{int(mixer_perce) / 100}")
-        if self.selected_image:
-            component_data = (int(mixer_perce) / 100) * self.images_selected[image_index]
-            # self.selected_image = False
+        # print(f"perc:{int(mixer_perce) / 100}")
+        self.get_data()
+        # if self.selected_image:
+        #     self.get_data(self.images_selected[image_index])
+        #     # component_data = (int(mixer_perce) / 100) * self.images_selected[image_index]
+        #     # self.selected_image = False
+        # else:
+        #     self.get_data(self.images_selected[image_index])
+        #     # component_data = (int(mixer_perce) / 100) * self.images_mode_data[image_index][1]
+
+        # component = self.images_mode_data[image_index][0]
+        #
+        # self.image_components[image_index] = [component, component_data]
+
+        self.sum_same_components_of_different_img()
+
+    def check_output_port(self,output_port):
+        self.output_port = output_port
+
+    def which_case_is_mixer(self,case):
+        if case:
+            if self.output_port == 5:
+                output_port = 4
+            else:
+                output_port = 5
         else:
-            component_data = (int(mixer_perce) / 100) * self.images_mode_data[image_index][1]
+            output_port = self.output_port
 
-        component = self.images_mode_data[image_index][0]
+        return output_port
 
-        self.image_components[image_index] = [component, component_data]
-        self.image_component[component] = []
-        self.sum_same_components_of_different_img(component)
+
 
     def get_components_mixer(self):
-        print(f"image:{len(self.images_mode_data)}")
+        print(f"image_mode_data:{len(self.images_mode_data)}")
         Mag_component = np.sum(self.image_component["Magnitude"], axis=0)
         Phase_component = np.sum(self.image_component["Phase"], axis=0)
         Real_component = np.sum(self.image_component["Real Components"], axis=0)
         imaginary_component = np.sum(self.image_component["Imaginary Components"], axis=0)
-        print(Mag_component.size)
-        if Mag_component.size != 1 or Phase_component.size != 1:
+        print(f"Mag:{Mag_component.size}")
+        print(f"MAG_data:{Mag_component}")
+        if Mag_component.size > 1 or Phase_component.size > 1:
+            self.mag_and_phase = True
             print("hallo mixer 1")
             # print(f"exp:{np.exp(Phase_component*1j)}")
             mixer_result = Mag_component * np.exp(Phase_component*1j)
             # print(f"result:{mixer_result}")
-            self.image_mixer(mixer_result, 4)
+            # output_port = self.which_case_is_mixer(self.real_and_imaginary)
+            self.image_mixer(mixer_result, self.output_port)
         print(f'real:{Real_component.size,imaginary_component.size}')
-        if Real_component.size != 1 or imaginary_component.size != 1:
+        if Real_component.size > 1 or imaginary_component.size > 1:
+            self.real_and_imaginary = True
+
             mixer_result = Real_component + 1j*imaginary_component
             # print(f"result:{mixer_result}")
-            self.image_mixer(mixer_result, 4)
+            # output_port = self.which_case_is_mixer(self.mag_and_phase)
+            self.image_mixer(mixer_result,  self.output_port)
 
 
 
@@ -365,6 +435,8 @@ class MainApp(QMainWindow, MainUI):
             lambda: self.image.components_mixer(self.horizontalSlider_img3.value(), 2))
         self.horizontalSlider_img4.valueChanged.connect(
             lambda: self.image.components_mixer(self.horizontalSlider_img4.value(), 3))
+        self.radioButton_output_port1.clicked.connect(lambda : self.image.check_output_port(4))
+        self.radioButton_output_port2.clicked.connect(lambda: self.image.check_output_port(5))
         
         # self.graphicsView_img0.mousePressEvent = lambda event: self.image.selection(0)
 
