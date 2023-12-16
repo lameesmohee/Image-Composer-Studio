@@ -22,6 +22,7 @@ from skimage.color import rgb2hsv, rgb2gray, rgb2yuv
 from skimage.transform import  resize
 from matplotlib.widgets import RectangleSelector
 from collections import Counter
+import cv2
 
 
 
@@ -85,6 +86,20 @@ class Image:
             5: [self.main_window.output_port_2],
 
         }
+        self.selected_index = 0
+        self.brightness = 0
+        self.contrast = 1.0
+
+        # Connect mouse events for brightness adjustment
+        self.main_window.first_img_original.mousePressEvent = self.mousePressEvent
+        self.main_window.second_img_original.mousePressEvent = self.mousePressEvent
+        self.main_window.third_img_original.mousePressEvent = self.mousePressEvent
+        self.main_window.fourth_img_original.mousePressEvent = self.mousePressEvent
+        self.main_window.first_img_original.mouseMoveEvent = self.mouseMoveEvent
+        self.main_window.second_img_original.mouseMoveEvent = self.mouseMoveEvent
+        self.main_window.third_img_original.mouseMoveEvent = self.mouseMoveEvent
+        self.main_window.fourth_img_original.mouseMoveEvent = self.mouseMoveEvent
+
 
     def create_figure(self):
         for __ in range(0,6):
@@ -376,11 +391,6 @@ class Image:
             # output_port = self.which_case_is_mixer(self.mag_and_phase)
             self.image_mixer(mixer_result,  self.output_port)
 
-
-
-
-
-
     def image_mixer(self,data_mixer,output_port_index):
 
         self.axes[output_port_index].cla()
@@ -397,6 +407,52 @@ class Image:
         return
 
         # label.setPixmap(canvas.get_default_renderer().toPixmap())
+    
+    def mousePressEvent(self, event):
+        if event.button() == Qt.RightButton:
+            self.lastPos = event.pos()
+
+    def mouseMoveEvent(self, event):
+        if event.buttons() & Qt.RightButton:
+            dy = event.y() - self.lastPos.y()
+            if dy > 0:
+                self.brightness += 1  # Increase brightness when moving up
+            else:
+                self.brightness -= 1  # Decrease brightness when moving down
+
+            dx = event.x() - self.lastPos.x()
+            if dx > 0:
+                self.contrast += 0.1  # Increase contrast when moving right
+            else:
+                self.contrast -= 0.1  # Decrease contrast when moving left
+
+            self.lastPos = event.pos()
+            self.paint_brightness_contrast_adjusted_image(self.selected_index)
+
+    def paint_brightness_contrast_adjusted_image(self, image_index):
+        if self.images[image_index] is None:
+            return
+
+        img = self.images[image_index].copy()  
+
+        if len(img.shape) > 2:
+            img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY) # Convert the image to grayscale
+
+        adjusted = cv2.convertScaleAbs(img, alpha=self.contrast, beta=self.brightness)
+
+        height, width = adjusted.shape
+        bytes_per_line = width
+        q_img = QImage(adjusted.data, width, height, bytes_per_line, QImage.Format_Grayscale8)
+
+        pixmap = QPixmap.fromImage(q_img)
+
+        label = self.draw_images[image_index][1] 
+        label.setPixmap(pixmap)
+        label.setScaledContents(True)
+
+        add_image_button = self.draw_images[image_index][2]
+        if add_image_button is not None:
+            add_image_button.hide()
 
 class MainApp(QMainWindow, MainUI):
     def __init__(self, parent=None):
