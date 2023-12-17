@@ -51,28 +51,28 @@ class Image:
         self.x2, self.y2 = 0, 0
         self.counter_comp = 0
         self.visited_img = []
+
         self.image_component={
             "Magnitude": [],
             "Phase": [],
             "Real Components": [],
             "Imaginary Components": []
-
         }
+
         self.mag_and_phase = False
         self.real_and_imaginary = False
         self.image_components = {}
+
         self.sliders = [self.main_window.horizontalSlider_img1,
                        self.main_window.horizontalSlider_img2,
                        self.main_window.horizontalSlider_img3,
                        self.main_window.horizontalSlider_img4]
-
-
+        
         self.image_components_func ={
             "Magnitude": self.get_magnitude,
             "Phase": self.get_Phase,
             "Real Components" : self.get_Real,
             "Imaginary Components": self.get_Imaginary
-
         }
 
         self.create_figure()
@@ -84,7 +84,6 @@ class Image:
             3: [self.main_window.graphicsView_img3,self.main_window.fourth_img_original, self.main_window.add_img4_btn],
             4: [self.main_window.output_port_1],
             5: [self.main_window.output_port_2],
-
         }
         self.selected_index = 0
         self.brightness = 0
@@ -118,29 +117,30 @@ class Image:
     def open_image(self,file_path,button_name):
         pixmap = QPixmap(file_path)
         image = pixmap.toImage()
-
+        # Checking if the image isn't an output image
         if button_name != 4 and button_name != 5:
+           # Getting the image data and putting the images into a dictionary for easy access
            image_data = imread(file_path)
            self.images[button_name] = image_data
 
         self.file_path = file_path
+        #Converting the image into grayscale
         self.grayscale_image = self.convert_to_grayscale(image)
         image = self.grayscale_image
+        # Viewing the Image in it's viewport and setting it's size to 300 * 300
         self.draw_images[button_name][1].setPixmap(QPixmap.fromImage(image).scaled(300, 300,
                                                                                    aspectRatioMode=True,
                                                                                    transformMode=1))
         self.draw_images[button_name][1].setScaledContents(True)
+        # Checking if an Image exist to remove the button if an image was found
         if not self.draw_images[button_name][2] is None:
             self.draw_images[button_name][2].hide()
-
-
-
 
     def convert_to_grayscale(self, image):
         # Retrieving the width and height of the image to loop through all pixels.
         width = image.width()
         height = image.height()
-
+        # Looping around each pixel
         for y in range(height):
             for x in range(width):
                 pixel = image.pixel(x, y)
@@ -153,6 +153,7 @@ class Image:
         return image
 
     def fourier_transform(self,image):
+        # FT function to get the magnitude, phase, real and imaginary components of an image
         image = np.fft.fftshift(np.fft.fft2(image))
         return np.abs(image), np.angle(image) ,image
 
@@ -176,7 +177,6 @@ class Image:
 
         self.x1, self.y1 = eclick.xdata, eclick.ydata
         self.x2, self.y2 = erelease.xdata, erelease.ydata
-        # print(f"axes:{x1,y1,x2,y2}")
         self.selected_rectangle = plt.Rectangle(
             (min(self.x1,self.x2), min(self.y1,self.y2)),
             np.abs(self.x1 - self.x2),
@@ -185,19 +185,12 @@ class Image:
             fill=False
         )
         self.get_selected_image()
-
         self.axes[image_index].add_patch(self.selected_rectangle)
-
-
-
         self.figures[image_index].canvas.draw()
-
         # for image_index, value in self.images_mode_data.items():
             # QCoreApplication.processEvents()
         self.components_mixer(self.sliders[image_index].value(),image_index)
-
         # self.get_components_mixer()
-
 
 
     def selection(self,image_index):
@@ -214,15 +207,14 @@ class Image:
                 interactive=True,
             )
             print("RectangleSelector created")
-
         else:
             print("RectangleSelector already exists")
 
         print(self.rs)
 
 
-
     def plot_axes(self,mode,image_index,data):
+        # Function to plot the Chosen component for an image
         data = self.image_components_func[mode](mode,image_index,data)
         self.axes[image_index].imshow(data, cmap='gray')
 
@@ -261,7 +253,7 @@ class Image:
             'button_press_event',
             lambda event, index=image_index: self.selection(index)
         )
-        # self.figures[image_index].canvas.mpl_connect('button_press_event',self.selection)
+        # Checking whether there's a selected rectangle or not
         if self.selected_image:
             self.get_selected_image()
         if len(self.images_mode_data) > 1:
@@ -279,40 +271,26 @@ class Image:
         self.scenes[image_index].addWidget(canvas)
         return
 
-    def brightness_contrast(self,image,image_index,bright,contrast):
-        new_image = np.zeros(image.shape,dtype=image.dtype)
-        for row in image:
-            for column in image:
-                for channel in image:
-                    new_image[row,column,channel] = np.clip(contrast*image[row,column,channel]+bright,
-                                                          0,255)
-
-        # image = adjust_gamma(image,gamma=gamma)    # less than 1 brightness  more than 1 contrast
-        self.axes[image_index].imshow(new_image, cmap="Gray")
-        self.update_graph(image_index)
-
     def check_times_image(self,image_index):
         self.visited_img.append(image_index)
         counter_img = Counter(self.visited_img)
         return counter_img[image_index] ,len(counter_img)
+    
     def initial_declare(self):
         self.image_component = {
             "Magnitude": [],
             "Phase": [],
             "Real Components": [],
             "Imaginary Components": []
-
         }
 
     def sum_same_components_of_different_img(self):
         self.initial_declare()
         for item, value in self.image_components.items():
-
             # self.image_component[value[0]] = []
             print(f"len before :{len(self.image_component[value[0]]), value[0]}")
             self.image_component[value[0]].append(value[1])
             print(f"len after :{self.image_component[value[0]], value[0]}")
-
 
         # if not self.selected_image:
         self.get_components_mixer()
@@ -365,7 +343,6 @@ class Image:
         return output_port
 
 
-
     def get_components_mixer(self):
         print(f"image_mode_data:{len(self.images_mode_data)}")
         Mag_component = np.sum(self.image_component["Magnitude"], axis=0)
@@ -377,35 +354,26 @@ class Image:
         if Mag_component.size > 1 or Phase_component.size > 1:
             self.mag_and_phase = True
             print("hallo mixer 1")
-            # print(f"exp:{np.exp(Phase_component*1j)}")
             mixer_result = Mag_component * np.exp(Phase_component*1j)
-            # print(f"result:{mixer_result}")
             # output_port = self.which_case_is_mixer(self.real_and_imaginary)
             self.image_mixer(mixer_result, self.output_port)
         print(f'real:{Real_component.size,imaginary_component.size}')
         if Real_component.size > 1 or imaginary_component.size > 1:
             self.real_and_imaginary = True
-
             mixer_result = Real_component + 1j*imaginary_component
             # print(f"result:{mixer_result}")
             # output_port = self.which_case_is_mixer(self.mag_and_phase)
             self.image_mixer(mixer_result,  self.output_port)
 
     def image_mixer(self,data_mixer,output_port_index):
-
         self.axes[output_port_index].cla()
-
         image = np.fft.ifft2(data_mixer)
-
         # img_filtered = np.abs(image).clip(0, 255).astype(np.uint8)
         img_filtered = np.abs(image).clip(0, 255).astype(np.float_)
         self.axes[output_port_index].imshow(img_filtered,cmap='gray')
         # self.figures[output_port_index].canvas.draw()
-        # print(img_filtered)
-
         self.update_graph(output_port_index)
         return
-
         # label.setPixmap(canvas.get_default_renderer().toPixmap())
     
     def mousePressEvent(self, event):
@@ -484,6 +452,12 @@ class MainApp(QMainWindow, MainUI):
         self.graphicsView_img2.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.graphicsView_img3.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.graphicsView_img3.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.output_port_1.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.output_port_1.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.output_port_1.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.output_port_1.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.output_port_2.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.output_port_2.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.horizontalSlider_img1.valueChanged.connect(lambda: self.image.components_mixer(self.horizontalSlider_img1.value(),0))
         self.horizontalSlider_img2.valueChanged.connect(
             lambda: self.image.components_mixer(self.horizontalSlider_img2.value(), 1))
@@ -493,7 +467,6 @@ class MainApp(QMainWindow, MainUI):
             lambda: self.image.components_mixer(self.horizontalSlider_img4.value(), 3))
         self.radioButton_output_port1.clicked.connect(lambda : self.image.check_output_port(4))
         self.radioButton_output_port2.clicked.connect(lambda: self.image.check_output_port(5))
-        
         # self.graphicsView_img0.mousePressEvent = lambda event: self.image.selection(0)
 
 
@@ -509,8 +482,6 @@ class MainApp(QMainWindow, MainUI):
 def main():
     app = QApplication(sys.argv)
     window = MainApp()
-    # image = Image(None)
-    # image.main_window.show()
     window.show()
     app.exec_()
 
