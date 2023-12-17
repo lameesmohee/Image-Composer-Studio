@@ -40,7 +40,11 @@ Experience signal analysis through image processing: customize components, mix i
 ## Project Demo
 
 ## Screenshots
-
+![Empty Interface](https://github.com/lameesmohee/Image-Composer-Studio/blob/main/screenshots/empty%20ui%20mixer.png)
+![Uploaded Images](https://github.com/lameesmohee/Image-Composer-Studio/blob/main/screenshots/uploaded%20images.png)
+![Selecting Component](https://github.com/lameesmohee/Image-Composer-Studio/blob/main/screenshots/selecting%20component.png)
+![Mixing](https://github.com/lameesmohee/Image-Composer-Studio/blob/main/screenshots/mixing.png)
+![Choosing Mixing Percentage](https://github.com/lameesmohee/Image-Composer-Studio/blob/main/screenshots/percentage.png)
 
 ## Made by:
 
