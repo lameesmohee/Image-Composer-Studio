@@ -37,7 +37,7 @@ class Image:
         self.main_window = main_window
         self.figures = []
         self.axes =[]
-        self.selected_rectangle = None
+        # self.selected_rectangle = None
         self.counter = 0
         self.updated = False
         self.images = [None] * 6
@@ -45,12 +45,18 @@ class Image:
         self.selected_image = False
         self.images_mode_data = {}
         self.rs = [None] * 6
+        self.selected_rectangle = [None] * 6
         self.scenes = []
         self.mixer = False
         self.x1, self.y1 = 0, 0
         self.x2, self.y2 = 0, 0
         self.counter_comp = 0
         self.visited_img = []
+        self.labels_img = [self.main_window.img_label1,
+                           self.main_window.img_label2,
+                           self.main_window.img_label3,
+                           self.main_window.img_label4
+                           ]
 
         self.image_component={
             "Magnitude": [],
@@ -159,6 +165,16 @@ class Image:
 
     def get_selected_image(self):
         for image_index, value in self.images_mode_data.items():
+            self.selected_rectangle[image_index] = plt.Rectangle(
+                (min(self.x1, self.x2), min(self.y1, self.y2)),
+                np.abs(self.x1 - self.x2),
+                np.abs(self.y1 - self.y2),
+                color='r',
+                fill=False
+            )
+            self.axes[image_index].add_patch(self.selected_rectangle[image_index])
+            self.figures[image_index].canvas.draw()
+
             self.images_selected[image_index] = value[1][int(min(self.y1, self.y2)): int(max(self.y1, self.y2)),
                                                 int(min(self.x1, self.x2)): int(max(self.x1, self.x2))]
             print(f"lenght_of_selected_image:{len(self.images_selected[image_index])}")
@@ -166,27 +182,23 @@ class Image:
                 self.selected_image = False
             else:
                 self.selected_image = True
+            if self.selected_image:
+                self.selected_rectangle[image_index].remove()
 
 
     def line_select_callback(self,eclick, erelease,image_index):
         print("allllo")
-        if self.selected_image:
-            self.selected_rectangle.remove()
+
 
         print(f"image_index:{image_index},lllllllllllllllllll")
 
         self.x1, self.y1 = eclick.xdata, eclick.ydata
         self.x2, self.y2 = erelease.xdata, erelease.ydata
-        self.selected_rectangle = plt.Rectangle(
-            (min(self.x1,self.x2), min(self.y1,self.y2)),
-            np.abs(self.x1 - self.x2),
-            np.abs(self.y1 - self.y2),
-            color='r',
-            fill=False
-        )
+
         self.get_selected_image()
-        self.axes[image_index].add_patch(self.selected_rectangle)
-        self.figures[image_index].canvas.draw()
+
+        # self.axes[image_index].add_patch(self.selected_rectangle)
+
         # for image_index, value in self.images_mode_data.items():
             # QCoreApplication.processEvents()
         self.components_mixer(self.sliders[image_index].value(),image_index)
@@ -215,6 +227,10 @@ class Image:
 
     def plot_axes(self,mode,image_index,data):
         # Function to plot the Chosen component for an image
+        self.axes[4].cla()
+        self.axes[5].cla()
+        self.figures[4].canvas.draw()
+        self.figures[5].canvas.draw()
         data = self.image_components_func[mode](mode,image_index,data)
         self.axes[image_index].imshow(data, cmap='gray')
 
@@ -295,10 +311,21 @@ class Image:
         # if not self.selected_image:
         self.get_components_mixer()
 
+    def select_inner_outer_corner(self,image_index,case):
+        if case == 'inner':
+            self.images_selected[image_index] = self.images_mode_data[image_index][1]
+        else:
+            self.images_selected[image_index] = self.images_mode_data[image_index][1] - self.images_selected[image_index]
+
+
     def get_data(self):
         for item, value in self.images_mode_data.items():
             component = value[0]
             image_index = item
+            self.labels_img[image_index].setText(str(self.sliders[item].value())+"%")
+            # self.select_inner_outer_corner(image_index,case)
+
+
 
             if self.selected_image:
                 component_data = (int(self.sliders[item].value()) / 100) * self.images_selected[image_index]
@@ -356,14 +383,16 @@ class Image:
             print("hallo mixer 1")
             mixer_result = Mag_component * np.exp(Phase_component*1j)
             # output_port = self.which_case_is_mixer(self.real_and_imaginary)
-            self.image_mixer(mixer_result, self.output_port)
+            self.image_mixer(mixer_result, 4)
         print(f'real:{Real_component.size,imaginary_component.size}')
+
+
         if Real_component.size > 1 or imaginary_component.size > 1:
             self.real_and_imaginary = True
             mixer_result = Real_component + 1j*imaginary_component
             # print(f"result:{mixer_result}")
             # output_port = self.which_case_is_mixer(self.mag_and_phase)
-            self.image_mixer(mixer_result,  self.output_port)
+            self.image_mixer(mixer_result,  5)
 
     def image_mixer(self,data_mixer,output_port_index):
         self.axes[output_port_index].cla()
