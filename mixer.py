@@ -42,6 +42,7 @@ class Image:
         self.updated = False
         self.images = [None] * 6
         self.images_selected = [None] * 6
+        self.images_selected_with_padding = [None] * 6
         self.selected_image = False
         self.images_mode_data = {}
         self.rs = [None] * 6
@@ -162,7 +163,8 @@ class Image:
         # FT function to get the magnitude, phase, real and imaginary components of an image
         image = np.fft.fftshift(np.fft.fft2(image))
         return np.abs(image), np.angle(image) ,image
-
+    def zero_padding(self,padding_size,image_index):
+        self.images_selected_with_padding[image_index] = np.zeros(padding_size)
     def get_selected_image(self):
         for image_index, value in self.images_mode_data.items():
             self.selected_rectangle[image_index] = plt.Rectangle(
@@ -174,9 +176,13 @@ class Image:
             )
             self.axes[image_index].add_patch(self.selected_rectangle[image_index])
             self.figures[image_index].canvas.draw()
+            print(f"value:{value[1].shape}")
+            self.zero_padding(value[1].shape,image_index)
 
             self.images_selected[image_index] = value[1][int(min(self.y1, self.y2)): int(max(self.y1, self.y2)),
                                                 int(min(self.x1, self.x2)): int(max(self.x1, self.x2))]
+            self.images_selected_with_padding[image_index][int(min(self.y1, self.y2)): int(max(self.y1, self.y2)),
+                                                int(min(self.x1, self.x2)): int(max(self.x1, self.x2))] = self.images_selected[image_index]
             print(f"lenght_of_selected_image:{len(self.images_selected[image_index])}")
             if len(self.images_selected[image_index]) == 0:
                 self.selected_image = False
@@ -315,7 +321,7 @@ class Image:
         if case == 'inner':
             self.images_selected[image_index] = self.images_mode_data[image_index][1]
         else:
-            self.images_selected[image_index] = self.images_mode_data[image_index][1] - self.images_selected[image_index]
+            self.images_selected[image_index] = self.images_mode_data[image_index][1] - self.images_selected_with_padding[image_index]
 
 
     def get_data(self):
