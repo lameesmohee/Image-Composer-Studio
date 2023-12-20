@@ -157,7 +157,7 @@ color: white</string>
           <widget class="QPushButton" name="add_img1_btn">
            <property name="geometry">
             <rect>
-             <x>70</x>
+             <x>80</x>
              <y>60</y>
              <width>141</width>
              <height>131</height>
@@ -199,6 +199,9 @@ color: white</string>
              <height>300</height>
             </size>
            </property>
+           <property name="cursor" stdset="0">
+            <cursorShape>ClosedHandCursor</cursorShape>
+           </property>
            <property name="styleSheet">
             <string notr="true">border: 0px;</string>
            </property>
@@ -229,7 +232,7 @@ color: white</string>
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>50</y>
+             <y>0</y>
              <width>181</width>
              <height>31</height>
             </rect>
@@ -269,7 +272,7 @@ color: white</string>
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>160</y>
+             <y>100</y>
              <width>221</width>
              <height>18</height>
             </rect>
@@ -288,7 +291,7 @@ color: white</string>
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>120</y>
+             <y>60</y>
              <width>171</width>
              <height>31</height>
             </rect>
@@ -305,9 +308,9 @@ color: white</string>
           <widget class="QLabel" name="img_label1">
            <property name="geometry">
             <rect>
-             <x>202</x>
-             <y>120</y>
-             <width>41</width>
+             <x>190</x>
+             <y>60</y>
+             <width>51</width>
              <height>31</height>
             </rect>
            </property>
@@ -318,6 +321,73 @@ color: white</string>
            </property>
            <property name="text">
             <string/>
+           </property>
+          </widget>
+          <widget class="QRadioButton" name="inner_img1">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>170</y>
+             <width>91</width>
+             <height>24</height>
+            </rect>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>11</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Inner</string>
+           </property>
+          </widget>
+          <widget class="QRadioButton" name="outer_img1">
+           <property name="geometry">
+            <rect>
+             <x>90</x>
+             <y>170</y>
+             <width>101</width>
+             <height>24</height>
+            </rect>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>11</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Outer</string>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_selected_1">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>140</y>
+             <width>81</width>
+             <height>31</height>
+            </rect>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>11</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Selection </string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="reset_img1">
+           <property name="geometry">
+            <rect>
+             <x>70</x>
+             <y>210</y>
+             <width>93</width>
+             <height>29</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Reset</string>
            </property>
           </widget>
          </widget>
@@ -421,6 +491,9 @@ color: white</string>
              <height>300</height>
             </size>
            </property>
+           <property name="cursor" stdset="0">
+            <cursorShape>ClosedHandCursor</cursorShape>
+           </property>
            <property name="styleSheet">
             <string notr="true">border: 0px;</string>
            </property>
@@ -451,7 +524,7 @@ color: white</string>
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>40</y>
+             <y>0</y>
              <width>181</width>
              <height>31</height>
             </rect>
@@ -491,7 +564,7 @@ color: white</string>
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>160</y>
+             <y>100</y>
              <width>221</width>
              <height>18</height>
             </rect>
@@ -510,7 +583,7 @@ color: white</string>
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>120</y>
+             <y>60</y>
              <width>171</width>
              <height>31</height>
             </rect>
@@ -528,8 +601,8 @@ color: white</string>
            <property name="geometry">
             <rect>
              <x>200</x>
-             <y>130</y>
-             <width>41</width>
+             <y>60</y>
+             <width>51</width>
              <height>31</height>
             </rect>
            </property>
@@ -540,6 +613,73 @@ color: white</string>
            </property>
            <property name="text">
             <string/>
+           </property>
+          </widget>
+          <widget class="QRadioButton" name="outer_img2">
+           <property name="geometry">
+            <rect>
+             <x>90</x>
+             <y>180</y>
+             <width>101</width>
+             <height>24</height>
+            </rect>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>11</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Outer</string>
+           </property>
+          </widget>
+          <widget class="QRadioButton" name="inner_img2">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>180</y>
+             <width>91</width>
+             <height>24</height>
+            </rect>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>11</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Inner</string>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_selected_2">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>150</y>
+             <width>81</width>
+             <height>31</height>
+            </rect>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>11</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Selection </string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="reset_img2">
+           <property name="geometry">
+            <rect>
+             <x>60</x>
+             <y>220</y>
+             <width>93</width>
+             <height>29</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Reset</string>
            </property>
           </widget>
          </widget>
@@ -605,6 +745,34 @@ color: white</string>
             <string/>
            </property>
           </widget>
+          <widget class="QGraphicsView" name="graphicsView_img2">
+           <property name="geometry">
+            <rect>
+             <x>320</x>
+             <y>0</y>
+             <width>300</width>
+             <height>300</height>
+            </rect>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>300</width>
+             <height>300</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>300</width>
+             <height>300</height>
+            </size>
+           </property>
+           <property name="cursor" stdset="0">
+            <cursorShape>ClosedHandCursor</cursorShape>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">border: 0px;</string>
+           </property>
+          </widget>
           <widget class="QPushButton" name="add_img3_btn">
            <property name="geometry">
             <rect>
@@ -627,31 +795,6 @@ color: white</string>
            </property>
            <property name="flat">
             <bool>false</bool>
-           </property>
-          </widget>
-          <widget class="QGraphicsView" name="graphicsView_img2">
-           <property name="geometry">
-            <rect>
-             <x>320</x>
-             <y>0</y>
-             <width>300</width>
-             <height>300</height>
-            </rect>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>300</width>
-             <height>300</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>300</width>
-             <height>300</height>
-            </size>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">border: 0px;</string>
            </property>
           </widget>
          </widget>
@@ -680,7 +823,7 @@ color: white</string>
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>50</y>
+             <y>0</y>
              <width>181</width>
              <height>31</height>
             </rect>
@@ -720,7 +863,7 @@ color: white</string>
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>160</y>
+             <y>100</y>
              <width>221</width>
              <height>18</height>
             </rect>
@@ -742,7 +885,7 @@ color: white</string>
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>120</y>
+             <y>60</y>
              <width>171</width>
              <height>31</height>
             </rect>
@@ -760,7 +903,7 @@ color: white</string>
            <property name="geometry">
             <rect>
              <x>200</x>
-             <y>120</y>
+             <y>60</y>
              <width>41</width>
              <height>31</height>
             </rect>
@@ -772,6 +915,73 @@ color: white</string>
            </property>
            <property name="text">
             <string/>
+           </property>
+          </widget>
+          <widget class="QRadioButton" name="inner_img3">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>180</y>
+             <width>91</width>
+             <height>24</height>
+            </rect>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>11</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Inner</string>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_selected_3">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>150</y>
+             <width>81</width>
+             <height>31</height>
+            </rect>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>11</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Selection </string>
+           </property>
+          </widget>
+          <widget class="QRadioButton" name="outer_img3">
+           <property name="geometry">
+            <rect>
+             <x>90</x>
+             <y>180</y>
+             <width>101</width>
+             <height>24</height>
+            </rect>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>11</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Outer</string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="reset_img3">
+           <property name="geometry">
+            <rect>
+             <x>70</x>
+             <y>220</y>
+             <width>93</width>
+             <height>29</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Reset</string>
            </property>
           </widget>
          </widget>
@@ -875,6 +1085,9 @@ color: white</string>
              <height>300</height>
             </size>
            </property>
+           <property name="cursor" stdset="0">
+            <cursorShape>ClosedHandCursor</cursorShape>
+           </property>
            <property name="styleSheet">
             <string notr="true">border: 0px;</string>
            </property>
@@ -905,7 +1118,7 @@ color: white</string>
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>40</y>
+             <y>0</y>
              <width>181</width>
              <height>31</height>
             </rect>
@@ -945,7 +1158,7 @@ color: white</string>
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>160</y>
+             <y>100</y>
              <width>221</width>
              <height>18</height>
             </rect>
@@ -964,7 +1177,7 @@ color: white</string>
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>120</y>
+             <y>60</y>
              <width>181</width>
              <height>31</height>
             </rect>
@@ -982,8 +1195,8 @@ color: white</string>
            <property name="geometry">
             <rect>
              <x>200</x>
-             <y>120</y>
-             <width>41</width>
+             <y>60</y>
+             <width>51</width>
              <height>31</height>
             </rect>
            </property>
@@ -994,6 +1207,73 @@ color: white</string>
            </property>
            <property name="text">
             <string/>
+           </property>
+          </widget>
+          <widget class="QRadioButton" name="outer_img4">
+           <property name="geometry">
+            <rect>
+             <x>90</x>
+             <y>180</y>
+             <width>101</width>
+             <height>24</height>
+            </rect>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>11</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Outer</string>
+           </property>
+          </widget>
+          <widget class="QRadioButton" name="inner_img4">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>180</y>
+             <width>91</width>
+             <height>24</height>
+            </rect>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>11</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Inner</string>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_selected_4">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>150</y>
+             <width>81</width>
+             <height>31</height>
+            </rect>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>11</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Selection </string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="reset_img4">
+           <property name="geometry">
+            <rect>
+             <x>60</x>
+             <y>210</y>
+             <width>93</width>
+             <height>29</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Reset</string>
            </property>
           </widget>
          </widget>

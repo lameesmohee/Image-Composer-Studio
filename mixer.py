@@ -52,6 +52,7 @@ class Image:
         self.x1, self.y1 = 0, 0
         self.x2, self.y2 = 0, 0
         self.counter_comp = 0
+        self.Reset =  False
         self.visited_img = []
         self.labels_img = [self.main_window.img_label1,
                            self.main_window.img_label2,
@@ -65,6 +66,19 @@ class Image:
             "Real Components": [],
             "Imaginary Components": []
         }
+        self.corners ={
+            0: [self.main_window.inner_img1,self.main_window.outer_img1,self.main_window.label_selected_1,self.main_window.reset_img1],
+            1: [self.main_window.inner_img2,self.main_window.outer_img2,self.main_window.label_selected_2,self.main_window.reset_img2],
+            2: [self.main_window.inner_img3,self.main_window.outer_img3,self.main_window.label_selected_3,self.main_window.reset_img3],
+            3: [self.main_window.inner_img4,self.main_window.outer_img4,self.main_window.label_selected_4,self.main_window.reset_img4]
+        }
+        for idx,item in self.corners.items():
+            for index in range(len(item)):
+                self.corners[idx][index].hide()
+            # self.corners[idx][1].hide()
+            # self.corners[idx][2].hide()
+            # swlf.corners[idx][3].hide()
+
 
         self.mag_and_phase = False
         self.real_and_imaginary = False
@@ -81,6 +95,8 @@ class Image:
             "Real Components" : self.get_Real,
             "Imaginary Components": self.get_Imaginary
         }
+
+        self.list_file_path = [None] * 6
 
         self.create_figure()
         self.create_scene()
@@ -101,10 +117,10 @@ class Image:
         self.main_window.second_img_original.mousePressEvent = self.mousePressEvent
         self.main_window.third_img_original.mousePressEvent = self.mousePressEvent
         self.main_window.fourth_img_original.mousePressEvent = self.mousePressEvent
-        self.main_window.first_img_original.mouseMoveEvent = self.mouseMoveEvent
-        self.main_window.second_img_original.mouseMoveEvent = self.mouseMoveEvent
-        self.main_window.third_img_original.mouseMoveEvent = self.mouseMoveEvent
-        self.main_window.fourth_img_original.mouseMoveEvent = self.mouseMoveEvent
+        self.main_window.first_img_original.mouseMoveEvent = lambda event:self.mouseMoveEvent(event,0)
+        self.main_window.second_img_original.mouseMoveEvent = lambda event:self.mouseMoveEvent(event,1)
+        self.main_window.third_img_original.mouseMoveEvent = lambda event:self.mouseMoveEvent(event,2)
+        self.main_window.fourth_img_original.mouseMoveEvent = lambda event:self.mouseMoveEvent(event,3)
 
 
     def create_figure(self):
@@ -122,6 +138,14 @@ class Image:
             self.scenes.append(scene)
 
     def open_image(self,file_path,button_name):
+        if not self.Reset:
+            self.list_file_path[button_name] = file_path
+        else:
+            file_path = self.list_file_path[button_name]
+            self.Reset = False
+
+        print(f"file_path:{self.list_file_path}")
+
         pixmap = QPixmap(file_path)
         image = pixmap.toImage()
         # Checking if the image isn't an output image
@@ -160,9 +184,11 @@ class Image:
         return image
 
     def fourier_transform(self,image):
+        # print(f"kkk:{image}")
         # FT function to get the magnitude, phase, real and imaginary components of an image
-        image = np.fft.fftshift(np.fft.fft2(image))
-        return np.abs(image), np.angle(image) ,image
+        imagee = np.fft.fftshift(np.fft.fft2(image))
+        print(f"magnitude:{np.abs(imagee)}")
+        return np.abs(imagee), np.angle(imagee) ,imagee
     def zero_padding(self,padding_size,image_index):
         self.images_selected_with_padding[image_index] = np.zeros(padding_size)
     def get_selected_image(self):
@@ -181,6 +207,7 @@ class Image:
 
             self.images_selected[image_index] = value[1][int(min(self.y1, self.y2)): int(max(self.y1, self.y2)),
                                                 int(min(self.x1, self.x2)): int(max(self.x1, self.x2))]
+            self.zero_padding(value[1].shape,image_index)
             self.images_selected_with_padding[image_index][int(min(self.y1, self.y2)): int(max(self.y1, self.y2)),
                                                 int(min(self.x1, self.x2)): int(max(self.x1, self.x2))] = self.images_selected[image_index]
             print(f"lenght_of_selected_image:{len(self.images_selected[image_index])}")
@@ -191,6 +218,10 @@ class Image:
             if self.selected_image:
                 self.selected_rectangle[image_index].remove()
 
+
+    def reset(self,image_index):
+        self.Reset = True
+        self.open_image(None,image_index)
 
     def line_select_callback(self,eclick, erelease,image_index):
         print("allllo")
@@ -237,38 +268,44 @@ class Image:
         self.axes[5].cla()
         self.figures[4].canvas.draw()
         self.figures[5].canvas.draw()
+        for idx in range(0,3):
+            self.corners[image_index][idx].show()
+
         data = self.image_components_func[mode](mode,image_index,data)
         self.axes[image_index].imshow(data, cmap='gray')
 
     def get_magnitude(self, mode, image_index, image_gray_scale):
-        Magnitude, phase, image = self.fourier_transform(image_gray_scale)
+        # print(f"suree2:{image_gray_scale}")
+        # Magnitude, phase, image = self.fourier_transform(image_gray_scale)
         self.images_mode_data[image_index] = []
-        self.images_mode_data[image_index] = [mode, Magnitude]
-        return np.log(Magnitude) / 20
+        self.images_mode_data[image_index] = [mode, self.Magnitude]
+        return np.log(self.Magnitude) / 20
 
     def get_Phase(self, mode, image_index, image_gray_scale):
-        Magnitude, phase, image = self.fourier_transform(image_gray_scale)
+        # Magnitude, phase, image = self.fourier_transform(image_gray_scale)
         self.images_mode_data[image_index] = []
-        self.images_mode_data[image_index] = [mode, phase]
-        return phase
+        self.images_mode_data[image_index] = [mode, self.phase]
+        return self.phase
 
     def get_Real(self, mode, image_index, image_gray_scale):
-        Magnitude, phase, image = self.fourier_transform(image_gray_scale)
+        # Magnitude, phase, image = self.fourier_transform(image_gray_scale)
         self.images_mode_data[image_index] = []
-        self.images_mode_data[image_index] = [mode, image.real]
-        return image.real
+        self.images_mode_data[image_index] = [mode, self.image.real]
+        return self.image.real
 
     def get_Imaginary(self, mode, image_index, image_gray_scale):
-        Magnitude, phase, image = self.fourier_transform(image_gray_scale)
+        # Magnitude, phase, image = self.fourier_transform(image_gray_scale)
         self.images_mode_data[image_index] = []
-        self.images_mode_data[image_index] = [mode,  image.imag]
-        return image.imag
+        self.images_mode_data[image_index] = [mode,  self.image.imag]
+        return self.image.imag
 
     def read_image(self,mode,image_index):
         self.axes[image_index].cla()
         print(f"mode:{mode}")
         self.image_gray_scale = rgb2gray(self.images[image_index])
         self.image_gray_scale = resize(self.image_gray_scale,(300,300),anti_aliasing=True)
+        self.Magnitude, self.phase, self.image = self.fourier_transform(self.image_gray_scale)
+        print(f"gray_img:{self.image_gray_scale}")
         self.plot_axes(mode,image_index,self.image_gray_scale)
         self.update_graph(image_index)
         self.figures[image_index].canvas.mpl_connect(
@@ -310,18 +347,32 @@ class Image:
         self.initial_declare()
         for item, value in self.image_components.items():
             # self.image_component[value[0]] = []
-            print(f"len before :{len(self.image_component[value[0]]), value[0]}")
+            # print(f"len before :{len(self.image_component[value[0]]), value[0]}")
             self.image_component[value[0]].append(value[1])
-            print(f"len after :{self.image_component[value[0]], value[0]}")
+            # print(f"len after :{self.image_component[value[0]], value[0]}")
 
         # if not self.selected_image:
         self.get_components_mixer()
 
     def select_inner_outer_corner(self,image_index,case):
-        if case == 'inner':
-            self.images_selected[image_index] = self.images_mode_data[image_index][1]
-        else:
-            self.images_selected[image_index] = self.images_mode_data[image_index][1] - self.images_selected_with_padding[image_index]
+        for item, value in self.images_mode_data.items():
+            component = value[0]
+            image_index = item
+            # self.zero_padding(value[1].shape,image_index)
+            print(f"case:{case}")
+            print(f"img before selection:{self.images_selected[image_index]}")
+
+
+            if case == 'inner':
+                self.images_selected[image_index] = self.images_mode_data[image_index][1]
+            else:
+                self.images_selected[image_index] = self.images_mode_data[image_index][1] - self.images_selected_with_padding[image_index]
+
+            print(f"img after selection:{self.images_selected[image_index]}")
+
+        self.components_mixer(1,1)
+
+
 
 
     def get_data(self):
@@ -330,8 +381,7 @@ class Image:
             image_index = item
             self.labels_img[image_index].setText(str(self.sliders[item].value())+"%")
             # self.select_inner_outer_corner(image_index,case)
-
-
+            print(f"before mix:{value[1]}")
 
             if self.selected_image:
                 component_data = (int(self.sliders[item].value()) / 100) * self.images_selected[image_index]
@@ -339,6 +389,7 @@ class Image:
             else:
                 component_data = (int(self.sliders[item].value()) / 100) * self.images_mode_data[image_index][1]
             self.image_components[image_index] = [component, component_data]
+            print(f"component_data:{component_data},{int(self.sliders[item].value()) / 100}")
                 # self.get_data(self.images_selected[image_index])
                 # component_data = (int(mixer_perce) / 100) * self.images_mode_data[image_index][1]
 
@@ -382,15 +433,17 @@ class Image:
         Phase_component = np.sum(self.image_component["Phase"], axis=0)
         Real_component = np.sum(self.image_component["Real Components"], axis=0)
         imaginary_component = np.sum(self.image_component["Imaginary Components"], axis=0)
-        print(f"Mag:{Mag_component.size}")
+        print(f"Mag:{Mag_component.shape}")
         print(f"MAG_data:{Mag_component}")
         if Mag_component.size > 1 or Phase_component.size > 1:
             self.mag_and_phase = True
-            print("hallo mixer 1")
-            mixer_result = Mag_component * np.exp(Phase_component*1j)
+            # print("hallo mixer 1")
+            print(f'exp:{np.exp(Phase_component * 1j)}')
+            mixer_result = Mag_component * np.exp(Phase_component * 1j)
+            # mixer_result = Mag_component
             # output_port = self.which_case_is_mixer(self.real_and_imaginary)
             self.image_mixer(mixer_result, 4)
-        print(f'real:{Real_component.size,imaginary_component.size}')
+        # print(f'real:{Real_component.size,imaginary_component.size}')
 
 
         if Real_component.size > 1 or imaginary_component.size > 1:
@@ -402,10 +455,16 @@ class Image:
 
     def image_mixer(self,data_mixer,output_port_index):
         self.axes[output_port_index].cla()
-        image = np.fft.ifft2(data_mixer)
+        print(f"mixer_daata:{data_mixer}")
+
+        # image = np.clip(np.abs(np.fft.ifft2(data_mixer)),0,225)
+        image = np.abs(np.fft.ifft2(data_mixer))
         # img_filtered = np.abs(image).clip(0, 255).astype(np.uint8)
-        img_filtered = np.abs(image).clip(0, 255).astype(np.float_)
-        self.axes[output_port_index].imshow(img_filtered,cmap='gray')
+        img_filtered = image.clip(0, 1).astype(np.float32)
+        # cv2.imshow('Inverted Image', img_filtered)
+
+        self.axes[output_port_index].imshow(img_filtered,cmap="gray")
+        # plt.imshow(img_filtered, cmap="gray")
         # self.figures[output_port_index].canvas.draw()
         self.update_graph(output_port_index)
         return
@@ -415,7 +474,7 @@ class Image:
         if event.button() == Qt.RightButton:
             self.lastPos = event.pos()
 
-    def mouseMoveEvent(self, event):
+    def mouseMoveEvent(self, event,image_index):
         if event.buttons() & Qt.RightButton:
             dy = event.y() - self.lastPos.y()
             if dy > 0:
@@ -430,16 +489,17 @@ class Image:
                 self.contrast -= 0.1  # Decrease contrast when moving left
 
             self.lastPos = event.pos()
-            self.paint_brightness_contrast_adjusted_image(self.selected_index)
+            self.paint_brightness_contrast_adjusted_image(image_index)
 
     def paint_brightness_contrast_adjusted_image(self, image_index):
+
         if self.images[image_index] is None:
             return
 
-        img = self.images[image_index].copy()  
+        img = self.images[image_index].copy()
 
         if len(img.shape) > 2:
-            img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY) # Convert the image to grayscale
+            img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)  # Convert the image to grayscale
 
         adjusted = cv2.convertScaleAbs(img, alpha=self.contrast, beta=self.brightness)
 
@@ -449,13 +509,18 @@ class Image:
 
         pixmap = QPixmap.fromImage(q_img)
 
-        label = self.draw_images[image_index][1] 
+        label = self.draw_images[image_index][1]
         label.setPixmap(pixmap)
         label.setScaledContents(True)
 
         add_image_button = self.draw_images[image_index][2]
+        self.corners[image_index][3].show()
         if add_image_button is not None:
             add_image_button.hide()
+
+
+
+
 
 class MainApp(QMainWindow, MainUI):
     def __init__(self, parent=None):
@@ -502,6 +567,19 @@ class MainApp(QMainWindow, MainUI):
             lambda: self.image.components_mixer(self.horizontalSlider_img4.value(), 3))
         self.radioButton_output_port1.clicked.connect(lambda : self.image.check_output_port(4))
         self.radioButton_output_port2.clicked.connect(lambda: self.image.check_output_port(5))
+        self.inner_img1.clicked.connect(lambda: self.image.select_inner_outer_corner(0,'inner'))
+        self.inner_img2.clicked.connect(lambda: self.image.select_inner_outer_corner(1,'inner'))
+        self.inner_img3.clicked.connect(lambda: self.image.select_inner_outer_corner(2,'inner'))
+        self.inner_img4.clicked.connect(lambda: self.image.select_inner_outer_corner(3,'inner'))
+        self.outer_img1.clicked.connect(lambda: self.image.select_inner_outer_corner(0,'outer'))
+        self.outer_img2.clicked.connect(lambda: self.image.select_inner_outer_corner(1,'outer'))
+        self.outer_img3.clicked.connect(lambda: self.image.select_inner_outer_corner(2,'outer'))
+        self.outer_img4.clicked.connect(lambda: self.image.select_inner_outer_corner(3,'outer'))
+        self.reset_img1.clicked.connect(lambda : self.image.reset(0))
+        self.reset_img2.clicked.connect(lambda: self.image.reset(1))
+        self.reset_img3.clicked.connect(lambda: self.image.reset(2))
+        self.reset_img4.clicked.connect(lambda: self.image.reset(3))
+
         # self.graphicsView_img0.mousePressEvent = lambda event: self.image.selection(0)
 
 
